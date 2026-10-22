@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import credits from '../data/credits.json';
+---
+<BaseLayout title="写真クレジット">
+  <PageHeader
+    title="写真クレジット"
+    en="PHOTO CREDITS"
+    lead="このサイトのプロトタイプでは、Wikimedia Commons で公開されている以下の写真を利用しています。<br />本番公開時には、平塚園の茶畑・店舗・商品を撮影した写真への差し替えを推奨します。"
+  />
+  <div class="l-container">
+    <div class="c-scroll">
+      <table class="c-table c-table--keep" style="min-width: 80rem;">
+        <thead>
+          <tr><th scope="col" style="width: 14rem;">写真</th><th scope="col">タイトル</th><th scope="col">撮影者</th><th scope="col">ライセンス</th></tr>
+        </thead>
+        <tbody>
+          {credits.map((c) => (
+            <tr>
+              <td><img src={c.image} alt="" loading="lazy" style="width: 12rem; aspect-ratio: 4/3; object-fit: cover;" /></td>
+              <td><a href={c.source} target="_blank" rel="noopener" style="text-decoration: underline;">{c.title}</a></td>
+              <td>{c.author}</td>
+              <td>{c.license}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</BaseLayout>

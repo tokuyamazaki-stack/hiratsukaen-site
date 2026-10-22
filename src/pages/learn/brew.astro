@@ -1,0 +1,100 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import Icon from '../../components/Icon.astro';
+import { brewGuides } from '../../data/site';
+
+const rows = ['premium', 'sencha', 'kukicha', 'mecha', 'konacha', 'roasted', 'teabag', 'cold', 'powder'].map((k) => brewGuides[k]);
+const steps = [
+  { icon: 'kettle', title: 'お湯を沸かす', text: '一度しっかり沸騰させて、カルキ臭を飛ばします。' },
+  { icon: 'cup', title: '湯冷ましをする', text: '人数分の湯のみにお湯を注ぎ、器を温めながら70〜80℃まで冷まします。' },
+  { icon: 'scale', title: '茶葉を入れる', text: '急須に茶葉を入れます。3人分で6g（ティースプーン約3杯）が目安です。' },
+  { icon: 'timer', title: '待つ', text: '湯のみのお湯を急須に注ぎ、ふたをして60〜90秒。茶葉がゆっくり開きます。' },
+  { icon: 'water', title: '注ぎ分ける', text: '濃さが均一になるよう少しずつ回し注ぎ、最後の一滴まで注ぎ切ります。' },
+];
+---
+<BaseLayout title="おいしいいれ方" description="狭山茶をおいしくいれるコツ。上級煎茶の基本のいれ方と、ほうじ茶・玄米茶・ティーバッグ・水出しなど種類別のいれ方の目安。">
+  <PageHeader
+    title="おいしいいれ方"
+    en="HOW TO BREW"
+    crumbs={[{ label: 'お茶を知る・楽しむ', href: '/learn/' }]}
+    lead="湯温と時間を少し変えるだけで、同じ茶葉でも味わいは驚くほど変わります。<br />まずは基本のいれ方から、お好みの一杯を見つけてください。"
+    image="/images/photo/cup-sencha-deep.jpg"
+  />
+
+  <div class="l-container">
+    <section class="block" aria-labelledby="basic-title">
+      <h2 id="basic-title" class="c-ttl-l2">基本のいれ方（上級煎茶・3人分）</h2>
+      <ol class="brew-steps">
+        {steps.map((s) => (
+          <li>
+            <Icon name={s.icon} size={36} />
+            <h3>{s.title}</h3>
+            <p>{s.text}</p>
+          </li>
+        ))}
+      </ol>
+      <p class="brew-note" style="margin-top: 2.4rem;"><Icon name="leaf" size={18} /><span>二煎目は、少し熱めのお湯を注いで待ち時間は短めに。一煎目とは違う、すっきりとした味わいが楽しめます。</span></p>
+    </section>
+
+    <section class="block" aria-labelledby="table-title">
+      <h2 id="table-title" class="c-ttl-l2">種類別 いれ方の目安</h2>
+      <div class="c-scroll">
+        <table class="c-table c-table--center c-table--keep" style="min-width: 80rem;">
+          <thead>
+            <tr>
+              <th scope="col">種類</th>
+              <th scope="col">茶葉の量</th>
+              <th scope="col">お湯の量</th>
+              <th scope="col">湯温</th>
+              <th scope="col">浸出時間</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr>
+                <th scope="row" style="text-align: left;">{r.label}</th>
+                <td>{r.leaf}</td>
+                <td>{r.water}</td>
+                <td>{r.temp}</td>
+                <td>{r.time}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top: 1.6rem; color: var(--c-gray); font-size: 1.3rem;">※あくまで目安です。お好みに合わせて茶葉の量や時間を調整してください。</p>
+    </section>
+
+    <section class="block story" aria-labelledby="cold-title">
+      <div class="story__img"><img src="/images/photo/cup-wood.jpg" alt="" loading="lazy" /></div>
+      <div>
+        <p class="story__en">COLD BREW</p>
+        <h2 id="cold-title" class="story__title">夏は、水出しの冷茶で。</h2>
+        <div class="prose">
+          <p>「特選水出し茶 ティーパック」は、春に摘まれた茶葉を特殊製法で仕上げた水出し専用のお茶。水で出しても濃い味が楽しめます。</p>
+          <p>水筒やボトルに氷と水、ティーパックを入れて出かければ、どこでもおいしい冷茶が楽しめます。</p>
+        </div>
+        <p style="margin-top: 3.2rem;"><a class="c-link" href="/products/16445080/">水出し茶を見る<Icon name="arrow" size={14} /></a></p>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="keep-title">
+      <h2 id="keep-title" class="c-ttl-l2">保存のコツ</h2>
+      <ul class="points">
+        <li>
+          <h3><Icon name="sun" size={24} />湿気・光・においを避けて</h3>
+          <p>お茶は湿気や光、においを吸いやすいデリケートな食品です。開封後は密閉できる茶筒などに移し、冷暗所で保存してください。</p>
+        </li>
+        <li>
+          <h3><Icon name="snow" size={24} />冷蔵庫から出したら</h3>
+          <p>未開封のお茶を冷蔵庫で保存した場合は、常温に戻してから開封してください。結露による湿気を防げます。</p>
+        </li>
+        <li>
+          <h3><Icon name="clock" size={24} />開封後はお早めに</h3>
+          <p>開封後は香りが少しずつ抜けていきます。2〜3週間を目安に、おいしいうちにお召し上がりください。</p>
+        </li>
+      </ul>
+    </section>
+  </div>
+</BaseLayout>

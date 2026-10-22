@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Icon from '../components/Icon.astro';
+import { company, stores } from '../data/site';
+---
+<BaseLayout title="会社概要" description="有限会社 平塚園の会社概要。埼玉県入間市で狭山茶の製造・販売を行っています。">
+  <PageHeader title="会社概要" en="COMPANY" />
+
+  <div class="l-container">
+    <section class="block" aria-label="会社情報">
+      <table class="c-table">
+        <tbody>
+          <tr><th scope="row">会社名</th><td>{company.name}</td></tr>
+          <tr><th scope="row">代表取締役</th><td>{company.ceo}</td></tr>
+          <tr><th scope="row">所在地</th><td>〒{company.zip}<br />{company.address}</td></tr>
+          <tr><th scope="row">電話番号</th><td>{company.tel}</td></tr>
+          <tr><th scope="row">FAX</th><td>{company.fax}</td></tr>
+          <tr><th scope="row">創業</th><td>{company.founded}</td></tr>
+          <tr><th scope="row">法人設立</th><td>{company.established}</td></tr>
+          <tr><th scope="row">業務内容</th><td>{company.business}</td></tr>
+          <tr><th scope="row">店舗</th><td>{stores.map((s) => <>{s.name}（{s.address}）<br /></>)}</td></tr>
+          <tr><th scope="row">取引金融機関</th><td>埼玉りそな銀行 武蔵藤沢支店・入間支店<br />みずほ銀行 川越支店<br />埼玉縣信用金庫 武蔵藤沢支店<br />飯能信用金庫 武蔵藤沢支店</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="block" aria-labelledby="access-title">
+      <h2 id="access-title" class="c-ttl-l2">アクセス</h2>
+      <div class="store__map" style="aspect-ratio: 16 / 7;">
+        <iframe title="平塚園 入間本店の地図" src={`https://maps.google.com/maps?q=${encodeURIComponent(company.address)}&z=15&output=embed`} loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </section>
+
+    <section class="block">
+      <ul class="c-linkbtns c-linkbtns--3">
+        <li><a class="c-linkbtn" href="/about/"><span><Icon name="leaf" size={24} />平塚園について</span><Icon name="arrow" size={22} /></a></li>
+        <li><a class="c-linkbtn" href="/legal/"><span><Icon name="book" size={24} />特定商取引法に基づく表記</span><Icon name="arrow" size={22} /></a></li>
+        <li><a class="c-linkbtn" href="/privacy/"><span><Icon name="book" size={24} />プライバシーポリシー</span><Icon name="arrow" size={22} /></a></li>
+      </ul>
+    </section>
+  </div>
+</BaseLayout>

@@ -1,0 +1,180 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { nav, categories, learnLinks, company } from '../data/site';
+import { stripBase } from '../lib/url';
+
+const path = stripBase(Astro.url.pathname);
+const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+---
+<div class="topbar">
+  <p class="topbar__text">
+    <Icon name="truck" size={16} />
+    <span><strong>{company.freeShippingThreshold.toLocaleString()}円以上</strong>のお買い上げで送料無料<span class="topbar__note">（ご自宅への配送に限ります）</span></span>
+    <a href="/guide/#shipping">詳しくはこちら</a>
+  </p>
+</div>
+
+<header class="header" id="header">
+  <div class="header__inner">
+    <a class="header__logo" href="/" aria-label="狭山茶の平塚園 トップページ">
+      <Logo />
+    </a>
+
+    <div class="header__main">
+      <ul class="header__util">
+        <li><a href="/company/">会社概要</a></li>
+        <li><a href="/guide/#faq">よくあるご質問</a></li>
+        <li><a href="/contact/">お問い合わせ</a></li>
+      </ul>
+
+      <nav class="h-nav" aria-label="メインメニュー">
+        <ul class="h-nav__list">
+          {nav.map((item) => (
+            <li class:list={['h-nav__item', { 'has-mega': item.mega, 'is-current': isCurrent(item.href) }]} data-mega={item.mega}>
+              <a class="h-nav__label" href={item.href} aria-haspopup={item.mega ? 'true' : undefined} aria-expanded={item.mega ? 'false' : undefined}>
+                {item.label}
+              </a>
+
+              {item.mega === 'products' && (
+                <div class="mega" role="region" aria-label="商品を探す">
+                  <div class="mega__inner">
+                    <div class="mega__head">
+                      <p class="c-ttl-l2 mega__title">商品を探す</p>
+                      <a class="c-link" href="/products/">商品一覧トップ<Icon name="arrow" size={14} /></a>
+                      <a class="c-link" href="/products/?sort=rank">売れ筋商品<Icon name="arrow" size={14} /></a>
+                    </div>
+                    <div class="mega__body">
+                      <p class="mega__label">種類から探す</p>
+                      <ul class="mega__cats">
+                        {categories.map((c) => (
+                          <li>
+                            <a href={`/products/?cat=${c.slug}`}>
+                              <Icon name={c.icon} size={26} />
+                              <span>{c.name}</span>
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                      <div class="mega__chips">
+                        <span class="mega__label">価格から探す</span>
+                        <a href="/products/?price=0-1000">〜1,000円</a>
+                        <a href="/products/?price=1000-3000">1,000〜3,000円</a>
+                        <a href="/products/?price=3000-5000">3,000〜5,000円</a>
+                        <a href="/products/?price=5000-">5,000円〜</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {item.mega === 'learn' && (
+                <div class="mega" role="region" aria-label="お茶を知る・楽しむ">
+                  <div class="mega__inner">
+                    <div class="mega__head">
+                      <p class="c-ttl-l2 mega__title">お茶を知る・楽しむ</p>
+                      <a class="c-link" href="/learn/">トップを見る<Icon name="arrow" size={14} /></a>
+                    </div>
+                    <ul class="mega__cards">
+                      {learnLinks.map((l) => (
+                        <li>
+                          <a href={l.href}>
+                            <span class="mega__thumb"><img src={l.image} alt="" loading="lazy" /></span>
+                            <span class="mega__cardTitle">{l.title}</span>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+
+    <div class="header__icons">
+      <button type="button" class="header__icon js-search-toggle" aria-label="サイト内検索" aria-controls="search-layer" aria-expanded="false">
+        <Icon name="search" size={22} />
+      </button>
+      <button type="button" class="header__icon js-cart-open" aria-label="カートを見る">
+        <Icon name="cart" size={22} />
+        <span class="cart-badge js-cart-count" hidden>0</span>
+      </button>
+      <button type="button" class="header__icon header__menuBtn js-drawer-open" aria-label="メニューを開く" aria-controls="drawer" aria-expanded="false">
+        <Icon name="menu" size={22} />
+        <span class="header__menuLabel">メニュー</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="search-layer" id="search-layer" hidden>
+    <form class="search-layer__form" action="/products/" method="get" role="search">
+      <label class="u-sr" for="header-q">キーワードで商品を探す</label>
+      <input id="header-q" name="q" type="search" placeholder="キーワードを入力（例：ほうじ茶、ギフト、ティーバッグ）" autocomplete="off" />
+      <button type="submit" aria-label="検索する"><Icon name="search" size={22} /></button>
+    </form>
+    <p class="search-layer__tags">
+      <span>よく検索されるキーワード：</span>
+      <a href="/products/?q=見出野">見出野</a>
+      <a href="/products/?q=ほうじ茶">ほうじ茶</a>
+      <a href="/products/?cat=gift">贈り物</a>
+      <a href="/products/?q=水出し">水出し</a>
+      <a href="/products/?cat=sweets">ようかん</a>
+    </p>
+  </div>
+</header>
+
+<div class="drawer" id="drawer" hidden>
+  <div class="drawer__overlay js-drawer-close"></div>
+  <div class="drawer__panel" role="dialog" aria-modal="true" aria-label="メニュー">
+    <div class="drawer__head">
+      <a href="/" class="drawer__logo"><Logo /></a>
+      <button type="button" class="drawer__close js-drawer-close" aria-label="メニューを閉じる"><Icon name="close" size={24} /></button>
+    </div>
+    <form class="drawer__search" action="/products/" method="get" role="search">
+      <input name="q" type="search" placeholder="キーワードを入力" aria-label="キーワードで商品を探す" />
+      <button type="submit" aria-label="検索する"><Icon name="search" size={20} /></button>
+    </form>
+    <nav aria-label="メニュー（スマートフォン）">
+      <ul class="drawer__nav">
+        <li class="drawer__acc">
+          <button type="button" class="drawer__accBtn" aria-expanded="false">商品を探す<Icon name="plus" size={18} /></button>
+          <div class="drawer__accBody">
+            <a class="drawer__top" href="/products/">商品一覧トップ</a>
+            <ul class="drawer__cats">
+              {categories.map((c) => (
+                <li><a href={`/products/?cat=${c.slug}`}><Icon name={c.icon} size={22} />{c.name}</a></li>
+              ))}
+            </ul>
+          </div>
+        </li>
+        <li><a href="/gift/">贈り物</a></li>
+        <li class="drawer__acc">
+          <button type="button" class="drawer__accBtn" aria-expanded="false">お茶を知る・楽しむ<Icon name="plus" size={18} /></button>
+          <div class="drawer__accBody">
+            <a class="drawer__top" href="/learn/">お茶を知る・楽しむ トップ</a>
+            <ul class="drawer__sub">
+              {learnLinks.map((l) => <li><a href={l.href}>{l.title}</a></li>)}
+            </ul>
+          </div>
+        </li>
+        <li><a href="/about/">平塚園について</a></li>
+        <li><a href="/shops/">店舗案内</a></li>
+        <li><a href="/guide/">ご利用ガイド</a></li>
+        <li><a href="/news/">お知らせ</a></li>
+      </ul>
+      <ul class="drawer__util">
+        <li><a href="/company/">会社概要</a></li>
+        <li><a href="/guide/#faq">よくあるご質問</a></li>
+        <li><a href="/contact/">お問い合わせ</a></li>
+      </ul>
+    </nav>
+    <div class="drawer__tel">
+      <p>お電話・FAXでもご注文を承ります</p>
+      <a href={`tel:${company.tel.replaceAll('-', '')}`}><Icon name="phone" size={18} />{company.tel}</a>
+      <span><Icon name="fax" size={18} />FAX {company.fax}</span>
+    </div>
+  </div>
+</div>

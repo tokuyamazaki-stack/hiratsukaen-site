@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+---
+<BaseLayout title="ページが見つかりません">
+  <section class="l-container notfound">
+    <p class="notfound__code">404</p>
+    <h1 class="c-ttl-l3" style="margin-top: 2.4rem;">お探しのページが見つかりませんでした</h1>
+    <p style="color: var(--c-text-2); margin-bottom: 4rem;">移動または削除された可能性があります。お手数ですが、トップページまたは商品一覧からお探しください。</p>
+    <p style="display: flex; gap: 1.6rem; justify-content: center; flex-wrap: wrap;">
+      <a class="c-btn c-btn--primary" href="/">トップページへ</a>
+      <a class="c-btn c-btn--outline" href="/products/">商品一覧へ<Icon name="arrow" size={16} /></a>
+    </p>
+  </section>
+</BaseLayout>

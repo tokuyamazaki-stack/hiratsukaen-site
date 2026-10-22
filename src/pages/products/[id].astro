@@ -1,0 +1,175 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import Icon from '../../components/Icon.astro';
+import { products, categoryBySlug, brewGuides, brewKeyFor, company, yen, type Product } from '../../data/site';
+import { withBase } from '../../lib/url';
+
+export function getStaticPaths() {
+  return products.map((p) => ({ params: { id: p.id }, props: { product: p } }));
+}
+
+const { product: p } = Astro.props as { product: Product };
+const cat = categoryBySlug[p.category];
+const brewKey = brewKeyFor(p);
+const brew = brewKey ? brewGuides[brewKey] : null;
+
+// 同じ茶葉の贈り物用セット（煎茶の場合）／元の煎茶（贈り物の場合）
+const giftSets = p.category === 'sencha' && p.series ? products.filter((o) => o.category === 'gift' && o.series === p.series) : [];
+const baseTea =
+  p.category === 'gift' && p.series ? products.find((o) => o.category === 'sencha' && o.series === p.series && o.spec?.includes('100g')) : undefined;
+const related = products.filter((o) => o.category === p.category && o.id !== p.id).slice(0, 4);
+const sweets = p.category !== 'sweets' ? products.filter((o) => o.category === 'sweets').slice(0, 4) : [];
+
+const labels: { text: string; tone: string }[] = [];
+if (p.recommend) labels.push({ text: 'おすすめ', tone: 'green' });
+if (p.bestseller) labels.push({ text: `売れ筋 No.${p.bestseller}`, tone: 'orange' });
+if (p.grade) labels.push({ text: p.grade, tone: 'gold' });
+if (p.spec?.includes('缶')) labels.push({ text: '缶入り', tone: 'gray' });
+
+const descLines = p.desc.split('\n').filter(Boolean);
+const site = Astro.site ?? new URL('https://www.hiratsukaen.co.jp');
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: p.name,
+  description: p.desc.replace(/\n/g, ''),
+  image: new URL(withBase(p.image), site).toString(),
+  sku: p.id,
+  brand: { '@type': 'Brand', name: '平塚園' },
+  offers: {
+    '@type': 'Offer',
+    priceCurrency: 'JPY',
+    price: p.price,
+    availability: 'https://schema.org/InStock',
+    url: new URL(withBase(`/products/${p.id}/`), site).toString(),
+  },
+};
+---
+<BaseLayout title={`${p.name}${p.spec ? `【${p.spec}】` : ''}`} description={`${p.name}（${cat.name}）。${p.desc.replace(/\n/g, '').slice(0, 90)}`} ogImage={p.image}>
+  <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+  <Breadcrumb items={[{ label: '商品一覧', href: '/products/' }, { label: cat.name, href: `/products/?cat=${cat.slug}` }, { label: p.name }]} />
+
+  <section class="l-container pd" style="margin-top: 2.4rem;">
+    <div class="pd__gallery">
+      <div class="pd__main"><img src={p.image} alt={p.name} /></div>
+      <p class="pd__note">※商品画像はイメージです。パッケージは予告なく変更になる場合がございます。</p>
+    </div>
+
+    <div class="pd__body">
+      <a class="pd__cat" href={`/products/?cat=${cat.slug}`}><Icon name={cat.icon} size={18} />{cat.name}</a>
+      {labels.length > 0 && (
+        <ul class="pd__labels">{labels.map((l) => <li class={`c-label c-label--${l.tone}`}>{l.text}</li>)}</ul>
+      )}
+      <h1 class="pd__name">{p.name}</h1>
+      {p.spec && <p class="pd__spec">内容量：{p.spec}</p>}
+      <p class="pd__price">{yen(p.price)}<span>（税込）</span></p>
+
+      <div class="pd__desc">
+        {descLines.map((l) => <p>{l}</p>)}
+      </div>
+
+      <div class="pd__buy js-buy-main">
+        <div class="qty qty--lg js-qty">
+          <button type="button" data-step="-1" aria-label="数量を減らす"><Icon name="minus" size={18} /></button>
+          <input id="qty-input" type="number" min="1" max="99" value="1" aria-label="数量" inputmode="numeric" />
+          <button type="button" data-step="1" aria-label="数量を増やす"><Icon name="plus" size={18} /></button>
+        </div>
+        <button type="button" class="c-btn c-btn--primary c-btn--lg js-add-cart" data-id={p.id} data-qty="#qty-input">
+          <Icon name="cart" size={22} />カートに入れる
+        </button>
+        <div class="pd__buyNote">
+          <p><Icon name="truck" size={18} />{company.freeShippingThreshold.toLocaleString()}円以上のお買い上げで送料無料（ご自宅への配送に限ります）</p>
+          <p><Icon name="clock" size={18} />ご注文確認後、原則3営業日以内に発送いたします</p>
+          <p><Icon name="card" size={18} />クレジットカード・Amazon Pay・代金引換・銀行振込</p>
+        </div>
+      </div>
+
+      <div class="pd__tel">
+        <span>お電話・FAXでもご注文いただけます</span>
+        <a href={`tel:${company.tel.replaceAll('-', '')}`}><Icon name="phone" size={20} />{company.tel}</a>
+      </div>
+
+      {baseTea && (
+        <p style="margin-top: 2.4rem;">
+          <a class="c-link" href={`/products/${baseTea.id}/`}>ご自宅用（{baseTea.spec}）はこちら<Icon name="arrow" size={14} /></a>
+        </p>
+      )}
+    </div>
+  </section>
+
+  {brew && (
+    <section class="l-container pd__section" aria-labelledby="brew-title">
+      <div class="c-head-row">
+        <h2 id="brew-title" class="c-ttl-l2">おいしいいれ方の目安</h2>
+        <a class="c-link" href="/learn/brew/">いれ方を詳しく見る<Icon name="arrow" size={14} /></a>
+      </div>
+      <dl class="brew">
+        <div><Icon name="scale" size={32} /><dt>茶葉の量</dt><dd>{brew.leaf}</dd></div>
+        <div><Icon name="water" size={32} /><dt>お湯の量</dt><dd>{brew.water}</dd></div>
+        <div><Icon name="thermo" size={32} /><dt>湯温</dt><dd>{brew.temp}</dd></div>
+        <div><Icon name="timer" size={32} /><dt>浸出時間</dt><dd>{brew.time}</dd></div>
+      </dl>
+      {brew.note && <p class="brew-note"><Icon name="cup" size={18} /><span>{brew.note}</span></p>}
+    </section>
+  )}
+
+  {giftSets.length > 0 && (
+    <section class="l-container pd__section" aria-labelledby="giftset-title">
+      <div class="c-head-row">
+        <h2 id="giftset-title" class="c-ttl-l2">このお茶の贈り物用セット</h2>
+        <a class="c-link" href="/gift/">贈り物特集へ<Icon name="arrow" size={14} /></a>
+      </div>
+      <div class="p-grid p-grid--4">
+        {giftSets.slice(0, 4).map((g) => <ProductCard product={g} />)}
+      </div>
+    </section>
+  )}
+
+  <section class="l-container pd__section" aria-labelledby="info-title">
+    <h2 id="info-title" class="c-ttl-l2">ご購入の前に</h2>
+    <div class="pd__info">
+      <div>
+        <h3><Icon name="truck" size={22} />送料について</h3>
+        <p>ヤマト運輸でお届けします。関東・信越・北陸・中部・南東北は500円、そのほかの地域は600〜850円です。{company.freeShippingThreshold.toLocaleString()}円以上で送料無料（ご自宅への配送に限ります）。<a href="/guide/#shipping">送料一覧</a></p>
+      </div>
+      <div>
+        <h3><Icon name="clock" size={22} />お届けについて</h3>
+        <p>ご注文確認後、原則3営業日以内に発送いたします。銀行振込の場合はご入金確認後の発送です。年末年始・GW・お盆は日数がかかる場合がございます。</p>
+      </div>
+      <div>
+        <h3><Icon name="card" size={22} />お支払いについて</h3>
+        <p>クレジットカード、Amazon Pay、代金引換（手数料324円〜）、銀行振込をご利用いただけます。<a href="/guide/#payment">詳しく見る</a></p>
+      </div>
+    </div>
+  </section>
+
+  {related.length > 0 && (
+    <section class="l-container pd__section" aria-labelledby="related-title">
+      <div class="c-head-row">
+        <h2 id="related-title" class="c-ttl-l2">{cat.name}のほかの商品</h2>
+        <a class="c-link" href={`/products/?cat=${cat.slug}`}>{cat.name}をすべて見る<Icon name="arrow" size={14} /></a>
+      </div>
+      <div class="p-grid p-grid--4">
+        {related.map((o) => <ProductCard product={o} />)}
+      </div>
+    </section>
+  )}
+
+  {sweets.length > 0 && (
+    <section class="l-container pd__section" aria-labelledby="sweets-title">
+      <h2 id="sweets-title" class="c-ttl-l2">お茶のおともに</h2>
+      <div class="p-grid p-grid--4">
+        {sweets.map((o) => <ProductCard product={o} />)}
+      </div>
+    </section>
+  )}
+
+  <div class="buybar js-buybar" aria-hidden="true">
+    <p class="buybar__price">{yen(p.price)}</p>
+    <button type="button" class="c-btn c-btn--primary js-add-cart" data-id={p.id} data-qty="#qty-input" tabindex="-1">
+      <Icon name="cart" size={20} />カートに入れる
+    </button>
+  </div>
+</BaseLayout>

@@ -1,0 +1,31 @@
+---
+import { withBase } from '../lib/url';
+
+export interface Crumb {
+  label: string;
+  href?: string;
+}
+interface Props {
+  items: Crumb[];
+}
+const all: Crumb[] = [{ label: 'トップ', href: '/' }, ...Astro.props.items];
+const site = Astro.site ?? new URL('https://www.hiratsukaen.co.jp');
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: all.map((c, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: c.label,
+    ...(c.href ? { item: new URL(withBase(c.href), site).toString() } : {}),
+  })),
+};
+---
+<nav class="breadcrumb l-container" aria-label="パンくずリスト">
+  <ol>
+    {all.map((c, i) => (
+      <li>{c.href && i < all.length - 1 ? <a href={c.href}>{c.label}</a> : <span aria-current="page">{c.label}</span>}</li>
+    ))}
+  </ol>
+</nav>
+<script type="application/ld+json" set:html={JSON.stringify(ld)} />

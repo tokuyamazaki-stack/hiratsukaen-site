@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Icon from '../components/Icon.astro';
+import { stores } from '../data/site';
+---
+<BaseLayout title="店舗案内" description="狭山茶の平塚園の直営店、入間本店（埼玉県入間市）と日高サイボク店（埼玉県日高市）のご案内です。">
+  <PageHeader title="店舗案内" en="STORES" lead="自園の狭山茶を、実際に見て、香りを確かめてお選びいただけます。贈り物のご相談もお気軽にどうぞ。" />
+
+  <div class="l-container">
+    <nav class="c-anchors" aria-label="ページ内リンク">
+      {stores.map((s) => <a href={`#${s.id}`}>{s.name}<Icon name="arrow" size={14} /></a>)}
+    </nav>
+
+    {stores.map((s) => (
+      <section class="store" id={s.id} aria-labelledby={`${s.id}-name`}>
+        <div>
+          <div class="store__img"><img src={s.image} alt="" loading="lazy" /></div>
+          <p class="store__en">{s.en}</p>
+          <h2 id={`${s.id}-name`} class="store__name">{s.name}</h2>
+          <p class="store__lead">{s.lead}</p>
+          <ul class="store__features">
+            {s.features.map((f) => <li><Icon name="check" size={18} />{f}</li>)}
+          </ul>
+        </div>
+        <div>
+          <table class="c-table c-table--compact">
+            <tbody>
+              <tr><th scope="row">住所</th><td>{s.zip && <>〒{s.zip}<br /></>}{s.address}</td></tr>
+              <tr><th scope="row">電話</th><td><a href={`tel:${s.tel.replaceAll('-', '')}`} style="font-weight: 700;">{s.tel}</a></td></tr>
+              <tr><th scope="row">FAX</th><td>{s.fax}</td></tr>
+              <tr><th scope="row">営業時間・定休日</th><td>お手数ですが、お電話にてご確認ください。</td></tr>
+            </tbody>
+          </table>
+          <div class="store__map">
+            <iframe
+              title={`${s.name}の地図`}
+              src={`https://maps.google.com/maps?q=${encodeURIComponent(s.mapQuery)}&z=15&output=embed`}
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
+          <div class="store__links">
+            <a class="c-btn c-btn--outline" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(s.mapQuery)}`} target="_blank" rel="noopener">
+              Googleマップで開く<Icon name="external" size={16} />
+            </a>
+            <a class="c-btn c-btn--outline" href={`tel:${s.tel.replaceAll('-', '')}`}><Icon name="phone" size={18} />電話をかける</a>
+          </div>
+        </div>
+      </section>
+    ))}
+  </div>
+</BaseLayout>

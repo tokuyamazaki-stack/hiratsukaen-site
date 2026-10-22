@@ -1,0 +1,396 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import ProductCard from '../components/ProductCard.astro';
+import { products, categories, categoryGroups, series, news, stores, learnLinks, yen } from '../data/site';
+
+const byId = Object.fromEntries(products.map((p) => [p.id, p]));
+const pick = (ids: string[]) => ids.map((id) => byId[id]).filter(Boolean);
+
+const recommended = pick(['165520698', '16443609', '16443483', '16443669']);
+const ranking = products.filter((p) => p.bestseller).sort((a, b) => (a.bestseller ?? 0) - (b.bestseller ?? 0));
+const gifts = pick(['16527109', '16527024', '16526996', '172839659']);
+const giftCount = products.filter((p) => p.category === 'gift').length;
+const giftMin = Math.min(...products.filter((p) => p.category === 'gift').map((p) => p.price));
+const seasonal = {
+  summer: pick(['16445080', '16443434', '153100386']),
+  winter: pick(['16444819', '16444732', '151919129']),
+};
+
+const kodawari = [
+  { no: '01', icon: 'award', title: '農林水産大臣賞を四度受賞', text: '品評会で毎年入賞を果たすため、製造技術の向上に努めてきました。ひたむきなお茶づくりが評価されています。' },
+  { no: '02', icon: 'sprout', title: '環境にやさしい茶園づくり', text: '埼玉県認証の特別栽培やエコファーマーに登録し、安心でおいしいお茶づくりに努めています。' },
+  { no: '03', icon: 'sun', title: '季節に合わせた仕上げ', text: '春に製造した荒茶を、暑い季節にはさっぱりと、寒い季節にはコクのある仕上げでお届けします。' },
+  { no: '04', icon: 'fire', title: '伝統の「狭山火入」', text: '古くから受け継がれる火入れ法が、コクのある味と深い香気という狭山茶ならではの個性を生みます。' },
+];
+---
+<BaseLayout bodyClass="page-top">
+  <!-- ===== メインビジュアル ===== -->
+  <section class="mv js-mv" aria-roledescription="carousel" aria-label="メインビジュアル">
+    <div class="mv__viewport">
+      <div class="mv__slide mv__slide--field is-active" role="group" aria-roledescription="slide" aria-label="1 / 3">
+        <img class="mv__bg" src="/images/photo/field-tokorozawa.jpg" alt="初夏の狭山茶の茶畑" fetchpriority="high" />
+        <div class="mv__shade"></div>
+        <div class="mv__field">
+          <p class="mv__vcopy">味は狭山で<br />とどめさす。</p>
+          <div class="mv__fieldInfo">
+            <p class="mv__song">色は静岡、香りは宇治よ、<br />味は狭山でとどめさす<span>── 狭山茶摘み歌より</span></p>
+            <div class="mv__badge" aria-label="農林水産大臣賞 四度受賞">
+              <span>農林水産<br />大臣賞</span>
+              <strong>四度受賞</strong>
+            </div>
+            <a class="mv__btn" href="/about/">平塚園のお茶づくり<Icon name="arrow" size={16} /></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="mv__slide mv__slide--gift" role="group" aria-roledescription="slide" aria-label="2 / 3">
+        <div class="mv__split">
+          <div class="mv__text">
+            <p class="mv__en">GIFT SELECTION</p>
+            <p class="mv__title">大切な方へ、<br />狭山の香りを。</p>
+            <p class="mv__lead">袋箱入り・缶セット・吟撰缶セットまで。<br />贈る方を思い浮かべて選べる{giftCount}種類。</p>
+            <p class="mv__price">{yen(giftMin)}<span>（税込）〜</span></p>
+            <a class="mv__btn mv__btn--dark" href="/gift/">贈り物を選ぶ<Icon name="arrow" size={16} /></a>
+          </div>
+          <div class="mv__collage" aria-hidden="true">
+            <img class="mv__ph mv__ph--1" src="/images/products/172839659.jpg" alt="" />
+            <img class="mv__ph mv__ph--2" src="/images/products/16527017.jpg" alt="" />
+            <img class="mv__ph mv__ph--3" src="/images/products/16527109.jpg" alt="" />
+          </div>
+        </div>
+      </div>
+
+      <div class="mv__slide mv__slide--hoji" role="group" aria-roledescription="slide" aria-label="3 / 3">
+        <div class="mv__split mv__split--rev">
+          <div class="mv__photo"><img src="/images/photo/hojicha-leaves.jpg" alt="香ばしく焙じたほうじ茶の茶葉" loading="lazy" /></div>
+          <div class="mv__text">
+            <p class="mv__en">FRESHLY ROASTED</p>
+            <p class="mv__title">焙じたての香りを、<br />ご自宅でも。</p>
+            <p class="mv__lead">日高サイボク店では土・日・祝日に、催事テントで<br class="u-pc" />ほうじ茶を炒りながら販売しています。<br />その香ばしさを真空パックに詰めてお届けします。</p>
+            <a class="mv__btn mv__btn--dark" href="/products/?cat=hojicha">ほうじ茶を見る<Icon name="arrow" size={16} /></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mv__ctrl">
+      <button type="button" class="mv__arrow js-mv-prev" aria-label="前のスライド"><Icon name="chev-left" size={20} /></button>
+      <button type="button" class="mv__pause js-mv-pause" aria-label="自動再生を停止"><Icon name="pause" size={18} /></button>
+      <div class="mv__dots" role="tablist" aria-label="スライドを選択">
+        {[1, 2, 3].map((n) => (
+          <button type="button" class:list={['mv__dot js-mv-dot', { 'is-active': n === 1 }]} aria-label={`スライド${n}`} data-index={n - 1}></button>
+        ))}
+      </div>
+      <button type="button" class="mv__arrow js-mv-next" aria-label="次のスライド"><Icon name="chev-right" size={20} /></button>
+    </div>
+  </section>
+
+  <!-- ===== お知らせ ===== -->
+  <section class="top-info" aria-labelledby="top-info-title">
+    <div class="l-container top-info__inner">
+      <h2 id="top-info-title" class="top-info__title">お知らせ</h2>
+      <ul class="top-info__list">
+        {news.slice(0, 3).map((n) => (
+          <li>
+            <a href={n.href}>
+              <time datetime={n.date.replaceAll('.', '-')}>{n.date}</time>
+              <span>{n.title}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <a class="c-link top-info__more" href="/news/">一覧を見る<Icon name="arrow" size={14} /></a>
+    </div>
+  </section>
+
+  <!-- ===== 煎茶のシリーズ（ブランドコンセプト） ===== -->
+  <section class="section top-brand js-brand" aria-label="平塚園の煎茶">
+    <div class="top-brand__track js-brand-track">
+      {series.map((s, i) => {
+        const p = byId[s.product];
+        return (
+          <article class:list={['top-brand__item js-brand-item', { 'is-active': i === 0 }]} aria-label={s.name}>
+            <a class="top-brand__visual" href={`/products/${s.product}/`} tabindex="-1" aria-hidden="true">
+              <img class="top-brand__bg" src={s.image} alt="" loading={i === 0 ? 'eager' : 'lazy'} />
+              <span class="top-brand__pack"><img src={p.image} alt="" loading="lazy" /></span>
+              <span class="top-brand__en">{s.en}</span>
+            </a>
+            <div class="top-brand__text js-fade">
+              <h2 class="top-brand__ttl">{s.name}<small>平塚園の煎茶 {String(i + 1).padStart(2, '0')}</small></h2>
+              <p class="top-brand__catch" set:html={s.catch.replace('\n', '<br />')} />
+              <p class="top-brand__body">{s.body}</p>
+              <div class="top-brand__foot">
+                <p class="top-brand__price">{p.spec} {yen(p.price)}<span>（税込）</span></p>
+                <a class="c-link" href={`/products/${s.product}/`}>商品を見る<Icon name="arrow" size={14} /></a>
+              </div>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+    <div class="l-container top-brand__ctrl">
+      <p class="top-brand__count" aria-live="polite"><span class="js-brand-current">1</span><i></i><span>{series.length}</span></p>
+      <button type="button" class="top-brand__prev js-brand-prev" aria-label="前の煎茶"><Icon name="arrow-left" size={28} /></button>
+      <button type="button" class="top-brand__next js-brand-next" aria-label="次の煎茶"><Icon name="arrow" size={44} /></button>
+    </div>
+  </section>
+
+  <!-- ===== ピックアップ ===== -->
+  <section class="section c-pickup l-container" aria-labelledby="pickup-title">
+    <h2 id="pickup-title" class="c-ttl-l2 vertical c-pickup__ttl">ピックアップ</h2>
+    <div class="c-pickup__main js-tabs">
+      <div class="c-pickup__head">
+        <div class="c-tabs-text" role="tablist" aria-label="ピックアップ商品の切り替え">
+          <button type="button" role="tab" class="is-active" aria-selected="true" aria-controls="pickup-reco" id="tab-reco">おすすめ商品</button>
+          <button type="button" role="tab" aria-selected="false" aria-controls="pickup-rank" id="tab-rank" tabindex="-1">売れ筋ランキング</button>
+        </div>
+        <a class="c-link" href="/products/">商品一覧へ<Icon name="arrow" size={14} /></a>
+      </div>
+      <div class="c-pickup__panel" role="tabpanel" id="pickup-reco" aria-labelledby="tab-reco">
+        <div class="p-grid p-grid--4">
+          {recommended.map((p) => <ProductCard product={p} />)}
+        </div>
+      </div>
+      <div class="c-pickup__panel" role="tabpanel" id="pickup-rank" aria-labelledby="tab-rank" hidden>
+        <div class="p-grid p-grid--4">
+          {ranking.map((p) => <ProductCard product={p} rank={p.bestseller ?? undefined} />)}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 商品を探す ===== -->
+  <section class="section c-search" aria-labelledby="search-title">
+    <div class="l-container">
+      <h2 id="search-title" class="c-ttl-l2 js-fade">商品を探す</h2>
+    </div>
+    <div class="c-search__panel">
+      <div class="c-search__inner">
+        <h3 class="c-ttl-l3">キーワードから探す</h3>
+        <form class="c-search__kw" action="/products/" method="get" role="search">
+          <label class="u-sr" for="top-q">キーワード</label>
+          <input id="top-q" name="q" type="search" placeholder="キーワードを入力" />
+          <button type="submit" aria-label="検索する"><Icon name="search" size={22} /></button>
+        </form>
+
+        <h3 class="c-ttl-l3">種類から探す</h3>
+        <ul class="c-search__groups">
+          {categoryGroups.map((g) => (
+            <li>
+              <a href={g.href}>
+                <span class="c-search__gname">{g.name}<small>{g.sub}</small></span>
+                <Icon name="arrow" size={22} />
+              </a>
+            </li>
+          ))}
+        </ul>
+        <ul class="c-search__cats">
+          {categories.map((c) => (
+            <li>
+              <a href={`/products/?cat=${c.slug}`}>
+                <Icon name={c.icon} size={30} />
+                <span>{c.name}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        <div class="c-search__cols">
+          <div>
+            <h3 class="c-ttl-l3">ご予算から探す</h3>
+            <ul class="c-search__chips">
+              <li><a href="/products/?price=0-1000">〜1,000円</a></li>
+              <li><a href="/products/?price=1000-3000">1,000〜3,000円</a></li>
+              <li><a href="/products/?price=3000-5000">3,000〜5,000円</a></li>
+              <li><a href="/products/?price=5000-">5,000円〜</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="c-ttl-l3">店舗で選ぶ</h3>
+            <a class="c-linkbtn -color-white" href="/shops/">
+              <span>店舗案内（入間本店・日高サイボク店）</span>
+              <Icon name="arrow" size={22} />
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 贈り物（キャンペーン枠） ===== -->
+  <section class="section top-gift l-container" aria-labelledby="gift-title">
+    <div class="top-gift__side">
+      <h2 id="gift-title" class="c-ttl-l2 vertical">贈り物</h2>
+      <p class="top-gift__count"><span>{gifts.length}</span><i></i><span>{giftCount}</span></p>
+      <a class="top-gift__all" href="/gift/"><span>一覧を見る</span><Icon name="arrow-down" size={14} /></a>
+    </div>
+    <ul class="top-gift__list">
+      {gifts.map((p) => (
+        <li class="js-fade">
+          <a href={`/products/${p.id}/`} class="top-gift__row">
+            <span class="top-gift__img"><img src={p.image} alt="" loading="lazy" /></span>
+            <span class="top-gift__body">
+              <span class="top-gift__name">{p.name}</span>
+              <span class="top-gift__meta">
+                <span class="top-gift__spec"><Icon name="gift" size={16} />{p.spec}</span>
+                <span class="top-gift__price">{yen(p.price)}<small>（税込）</small></span>
+                {p.grade && <span class="c-label c-label--gold">{p.grade}</span>}
+                {p.price < 3000 && <span class="c-label c-label--orange">手頃な贈り物</span>}
+              </span>
+            </span>
+            <Icon name="arrow" size={20} class="top-gift__arrow" />
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <!-- ===== 店舗・ご注文（体験・イベント枠） ===== -->
+  <section class="section top-event l-container" aria-labelledby="event-title">
+    <h2 id="event-title" class="c-ttl-l2 js-fade">店舗・ご注文</h2>
+    <ul class="c-cards c-cards--3">
+      <li class="js-fade">
+        <a href="/shops/#honten" class="c-card">
+          <span class="c-card__img"><img src={stores[0].image} alt="" loading="lazy" /></span>
+          <span class="c-card__ttl">入間本店</span>
+          <span class="c-card__txt">茶畑が広がる入間の地で、自園で育てた狭山茶を製造・販売しています。</span>
+          <span class="c-card__more">詳しく見る<Icon name="arrow" size={14} /></span>
+        </a>
+      </li>
+      <li class="js-fade">
+        <a href="/shops/#saiboku" class="c-card">
+          <span class="c-card__img"><img src={stores[1].image} alt="" loading="lazy" /></span>
+          <span class="c-card__ttl">日高サイボク店</span>
+          <span class="c-card__txt">土・日・祝日は催事テントでほうじ茶を炒りながら販売。焙じたての香りをお楽しみください。</span>
+          <span class="c-card__more">詳しく見る<Icon name="arrow" size={14} /></span>
+        </a>
+      </li>
+      <li class="js-fade">
+        <a href="/guide/#tel" class="c-card">
+          <span class="c-card__img"><img src="/images/photo/cup-wood.jpg" alt="" loading="lazy" /></span>
+          <span class="c-card__ttl">お電話・FAXでのご注文</span>
+          <span class="c-card__txt">インターネットでのご注文が不安な方も安心。お電話・FAXでもご注文を承ります。</span>
+          <span class="c-card__more">詳しく見る<Icon name="arrow" size={14} /></span>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ===== お茶を知る・楽しむ（動画ギャラリー枠） ===== -->
+  <section class="section top-learn l-container" aria-labelledby="learn-title">
+    <div class="c-head-row">
+      <h2 id="learn-title" class="c-ttl-l2 js-fade">お茶を知る・楽しむ</h2>
+      <a class="c-link" href="/learn/">一覧を見る<Icon name="arrow" size={14} /></a>
+    </div>
+    <ul class="c-cards c-cards--4">
+      {learnLinks.map((l) => (
+        <li class="js-fade">
+          <a href={l.href} class="c-card c-card--learn">
+            <span class="c-card__img"><img src={l.image} alt="" loading="lazy" /></span>
+            <span class="c-card__en">{l.en}</span>
+            <span class="c-card__ttl">{l.title}</span>
+            <span class="c-card__txt">{l.text}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <!-- ===== トピックス（お知らせ／季節のおすすめ） ===== -->
+  <section class="section top-news l-container">
+    <div class="top-news__col js-tabs">
+      <div class="top-news__head">
+        <h2 class="c-ttl-l2">お知らせ</h2>
+        <div class="c-tabs-box" role="tablist" aria-label="お知らせの種類">
+          <button type="button" role="tab" class="is-active" aria-selected="true" aria-controls="news-all" id="tab-news-all">すべて</button>
+          <button type="button" role="tab" aria-selected="false" aria-controls="news-item" id="tab-news-item" tabindex="-1">商品</button>
+          <button type="button" role="tab" aria-selected="false" aria-controls="news-store" id="tab-news-store" tabindex="-1">お店</button>
+        </div>
+      </div>
+      {[
+        { id: 'news-all', list: news },
+        { id: 'news-item', list: news.filter((n) => n.type === 'item') },
+        { id: 'news-store', list: news.filter((n) => n.type === 'store') },
+      ].map((t, i) => (
+        <ul class="c-news" role="tabpanel" id={t.id} aria-labelledby={`tab-${t.id}`} hidden={i !== 0}>
+          {t.list.slice(0, 5).map((n) => (
+            <li>
+              <a href={n.href}>
+                <span class="c-news__meta"><time datetime={n.date.replaceAll('.', '-')}>{n.date}</time><span class="c-news__tag">{n.tag}</span></span>
+                <span class="c-news__title">{n.title}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      ))}
+      <a class="c-link top-news__more" href="/news/">一覧を見る<Icon name="arrow" size={14} /></a>
+    </div>
+
+    <div class="top-news__col js-tabs">
+      <div class="top-news__head">
+        <h2 class="c-ttl-l2">季節のおすすめ</h2>
+        <div class="c-tabs-box" role="tablist" aria-label="季節の切り替え">
+          <button type="button" role="tab" class="is-active" aria-selected="true" aria-controls="season-summer" id="tab-season-summer"><Icon name="sun" size={16} />春・夏</button>
+          <button type="button" role="tab" aria-selected="false" aria-controls="season-winter" id="tab-season-winter" tabindex="-1"><Icon name="snow" size={16} />秋・冬</button>
+        </div>
+      </div>
+      {[
+        { id: 'season-summer', list: seasonal.summer, lead: '暑い季節は、さっぱりとした仕上げのお茶や冷茶で。' },
+        { id: 'season-winter', list: seasonal.winter, lead: '寒い季節は、コクのある仕上げのお茶や香ばしいお茶で温まって。' },
+      ].map((t, i) => (
+        <div role="tabpanel" id={t.id} aria-labelledby={`tab-${t.id}`} hidden={i !== 0}>
+          <p class="season__lead">{t.lead}</p>
+          <ul class="season__list">
+            {t.list.map((p) => (
+              <li>
+                <a href={`/products/${p.id}/`}>
+                  <span class="season__img"><img src={p.image} alt="" loading="lazy" /></span>
+                  <span class="season__body">
+                    <span class="season__name">{p.name}</span>
+                    <span class="season__price">{p.spec && `${p.spec}　`}{yen(p.price)}</span>
+                  </span>
+                  <Icon name="arrow" size={16} />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- ===== こだわり（活動・取組み枠） ===== -->
+  <section class="section top-kodawari" aria-labelledby="kodawari-title">
+    <div class="l-container">
+      <div class="c-head-row">
+        <h2 id="kodawari-title" class="c-ttl-l2 js-fade">平塚園のこだわり</h2>
+        <a class="c-link" href="/about/">平塚園について<Icon name="arrow" size={14} /></a>
+      </div>
+      <ul class="kodawari">
+        {kodawari.map((k) => (
+          <li class="kodawari__item js-fade">
+            <span class="kodawari__no">{k.no}</span>
+            <Icon name={k.icon} size={40} class="kodawari__icon" />
+            <h3 class="kodawari__ttl">{k.title}</h3>
+            <p class="kodawari__txt">{k.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== リンクボタン ===== -->
+  <section class="section top-links l-container" aria-label="ご利用案内">
+    <ul class="c-linkbtns">
+      <li><a class="c-linkbtn" href="/guide/"><span><Icon name="book" size={24} />ご利用ガイド</span><Icon name="arrow" size={22} /></a></li>
+      <li><a class="c-linkbtn" href="/guide/#shipping"><span><Icon name="truck" size={24} />送料・お届け</span><Icon name="arrow" size={22} /></a></li>
+      <li><a class="c-linkbtn" href="/guide/#faq"><span><Icon name="question" size={24} />よくあるご質問</span><Icon name="arrow" size={22} /></a></li>
+      <li><a class="c-linkbtn" href="/contact/"><span><Icon name="mail" size={24} />お問い合わせ</span><Icon name="arrow" size={22} /></a></li>
+    </ul>
+    <p class="c-notice" id="notice">
+      <Icon name="info" size={18} />
+      当園の狭山茶は、当サイトおよび直営店（入間本店・日高サイボク店）以外での販売はしておりません。他のサイトでのご購入にはご注意ください。
+    </p>
+  </section>
+</BaseLayout>

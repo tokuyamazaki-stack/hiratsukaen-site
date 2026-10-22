@@ -1,0 +1,83 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import Icon from '../../components/Icon.astro';
+
+const features = [
+  { icon: 'sun', title: '冷涼な丘陵地で育つ', text: '狭山茶は比較的冷涼な丘陵地帯で育ちます。寒さの中でゆっくり育った茶葉は、肉厚でコクのある味わいになります。' },
+  { icon: 'sprout', title: '摘採は年2回ほど', text: 'ほかの産地では年3〜4回摘むところ、狭山では年2回ほど。一回一回の茶葉に、旨みがじっくりと蓄えられます。' },
+  { icon: 'fire', title: '伝統の「狭山火入」', text: '古くから「狭山火入」と称されてきた独自の火入れ法。仕上げの火入れが、深い香気と甘みを引き出します。' },
+];
+const calendar = [
+  { m: '4', title: '新芽の芽吹き', text: '春の訪れとともに新芽が伸びはじめます。遅霜から新芽を守るため、茶畑の防霜ファンが回ります。' },
+  { m: '5', title: '一番茶の摘採・製造', text: '一年でいちばん忙しい季節。八十八夜の頃をはさみ、見出野・八十八夜摘・狭山かおりなどの一番茶を摘み、製造します。', peak: true },
+  { m: '6-7', title: '二番茶の摘採', text: '一番茶のあとに伸びた芽を摘みます。狭山では摘採は年2回ほどです。' },
+  { m: '8', title: '夏の仕上げ', text: '春に製造した荒茶を、暑い季節にはさっぱりとした仕上げ方でお届けします。' },
+  { m: '9-11', title: '秋の茶園管理', text: '翌年の新芽に向けて、茶の木の形を整え、土づくりを行います。' },
+  { m: '12-3', title: '冬の仕上げ・休眠期', text: '茶の木は春に備えて休む季節。寒い季節には、コクのある仕上げ方でお届けします。' },
+];
+---
+<BaseLayout title="狭山茶とは" description="「色は静岡、香りは宇治よ、味は狭山でとどめさす」。狭山茶の歴史と、コクのある味と深い香りが生まれる理由、茶園の一年をご紹介します。">
+  <PageHeader
+    title="狭山茶とは"
+    en="ABOUT SAYAMA TEA"
+    crumbs={[{ label: 'お茶を知る・楽しむ', href: '/learn/' }]}
+    lead="埼玉県西部から東京都の一部にかけて生産される狭山茶。<br />生産量は決して多くありませんが、その味わいはどこの茶所にも負けない自慢のひとつです。"
+    image="/images/photo/field-sayama.jpg"
+  />
+
+  <div class="l-container">
+    <section class="block quote">
+      <p>色は静岡、香りは宇治よ、<br />味は狭山でとどめさす</p>
+      <cite>── 狭山茶摘み歌より</cite>
+    </section>
+
+    <section class="block story" aria-labelledby="hist-title">
+      <div class="story__img"><img src="/images/photo/field-iruma-3.jpg" alt="入間市の茶畑" loading="lazy" /></div>
+      <div>
+        <p class="story__en">HISTORY</p>
+        <h2 id="hist-title" class="story__title">八百年の歴史をもつ、<br />銘園のお茶。</h2>
+        <div class="prose">
+          <p>お茶は八百年ほど前、臨済宗の開祖・栄西禅師により中国からその種が運ばれ、栽培されたところから始まったとされています。禅師は「喫茶養生記」という書物も著し、栽培を広めました。</p>
+          <p>狭山へは鎌倉時代に、京都の高僧・明恵上人によって栽培されたのが始まりといわれています。その後、茶業として確立したのは江戸時代のことでした。鎌倉時代より銘園五場に数えられる伝統を持ち、コクのある味と深い香気をその特徴とします。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="feat-title">
+      <h2 id="feat-title" class="c-ttl-l2">おいしさの理由</h2>
+      <ul class="kodawari kodawari--3">
+        {features.map((f, i) => (
+          <li class="kodawari__item js-fade">
+            <span class="kodawari__no">{String(i + 1).padStart(2, '0')}</span>
+            <Icon name={f.icon} size={40} class="kodawari__icon" />
+            <h3 class="kodawari__ttl">{f.title}</h3>
+            <p class="kodawari__txt">{f.text}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="block" id="calendar" aria-labelledby="cal-title">
+      <h2 id="cal-title" class="c-ttl-l2">茶園の一年</h2>
+      <p style="margin: -1.6rem 0 4rem; color: var(--c-text-2);">新芽の芽吹きから冬の休眠まで。その年の気候によって時期は前後します。</p>
+      <ol class="calendar">
+        {calendar.map((c) => (
+          <li class:list={{ 'is-peak': c.peak }}>
+            <p class="calendar__month">{c.m}<small>月</small></p>
+            <h3>{c.title}</h3>
+            <p>{c.text}</p>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="block">
+      <ul class="c-linkbtns c-linkbtns--3">
+        <li><a class="c-linkbtn" href="/products/?cat=sencha"><span><Icon name="cup" size={24} />狭山茶（煎茶）を見る</span><Icon name="arrow" size={22} /></a></li>
+        <li><a class="c-linkbtn" href="/learn/brew/"><span><Icon name="kettle" size={24} />おいしいいれ方</span><Icon name="arrow" size={22} /></a></li>
+        <li><a class="c-linkbtn" href="/about/"><span><Icon name="leaf" size={24} />平塚園について</span><Icon name="arrow" size={22} /></a></li>
+      </ul>
+    </section>
+  </div>
+</BaseLayout>

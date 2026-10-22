@@ -1,0 +1,116 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import Icon from '../../components/Icon.astro';
+import { products, categories, categoryGroups } from '../../data/site';
+
+const countBy = (slug: string) => products.filter((p) => p.category === slug).length;
+const catData = Object.fromEntries(categories.map((c) => [c.slug, { name: c.name, en: c.en, lead: c.lead, icon: c.icon }]));
+const groupData = Object.fromEntries(categoryGroups.map((g) => [g.id, { name: g.name, sub: g.sub }]));
+// おすすめ順：おすすめ → 売れ筋 → カテゴリ順
+const order = categories.map((c) => c.slug);
+const sorted = products
+  .slice()
+  .sort(
+    (a, b) =>
+      Number(b.recommend) - Number(a.recommend) ||
+      (a.bestseller ?? 99) - (b.bestseller ?? 99) ||
+      order.indexOf(a.category) - order.indexOf(b.category),
+  );
+const groups = [
+  { id: 'green', label: '緑茶' },
+  { id: 'roasted', label: '香ばしいお茶' },
+  { id: 'easy', label: '手軽に楽しむ' },
+  { id: 'gift', label: '贈り物・お菓子' },
+];
+const prices = [
+  { v: '0-1000', label: '〜1,000円' },
+  { v: '1000-3000', label: '1,000〜3,000円' },
+  { v: '3000-5000', label: '3,000〜5,000円' },
+  { v: '5000-', label: '5,000円〜' },
+];
+---
+<BaseLayout title="商品一覧" description="平塚園の狭山茶 全商品一覧。煎茶・くき茶・ほうじ茶・玄米茶・ティーバッグ・贈り物用セット・お菓子まで、種類やご予算から探せます。">
+  <PageHeader title="商品一覧" en="PRODUCTS" lead={`自園で育て、自園で仕上げた狭山茶を中心に、全${products.length}種類を取り揃えています。`} />
+
+  <script type="application/json" id="cat-data" set:html={JSON.stringify(catData)} />
+  <script type="application/json" id="group-data" set:html={JSON.stringify(groupData)} />
+
+  <div class="l-container plist js-plist">
+    <aside class="plist__side js-plist-side" aria-label="絞り込み">
+      <div class="plist__sideHead">
+        <span>絞り込み</span>
+        <button type="button" class="js-plist-side-close" aria-label="閉じる"><Icon name="close" size={22} /></button>
+      </div>
+
+      <div class="plist__group">
+        <p class="plist__gtitle">キーワード</p>
+        <form role="search">
+          <input class="js-plist-q" type="search" name="q" placeholder="商品名・特徴など" aria-label="キーワードで絞り込む" />
+        </form>
+      </div>
+
+      <div class="plist__group">
+        <p class="plist__gtitle">種類</p>
+        <ul class="plist__cats">
+          <li><a href="/products/" data-filter-cat=""><span><Icon name="leaf" size={20} />すべての商品</span><small>{products.length}</small></a></li>
+        </ul>
+        {groups.map((g) => (
+          <>
+            <ul class="plist__cats">
+              {categories.filter((c) => c.group === g.id).map((c) => (
+                <li>
+                  <a href={`/products/?cat=${c.slug}`} data-filter-cat={c.slug}>
+                    <span><Icon name={c.icon} size={20} />{c.name}</span>
+                    <small>{countBy(c.slug)}</small>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </>
+        ))}
+      </div>
+
+      <div class="plist__group">
+        <p class="plist__gtitle">ご予算</p>
+        <ul class="plist__price">
+          {prices.map((p) => (
+            <li><button type="button" data-filter-price={p.v}>{p.label}</button></li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="plist__group">
+        <button type="button" class="c-btn c-btn--outline c-btn--block js-plist-reset">条件をクリア</button>
+      </div>
+    </aside>
+
+    <div class="plist__main">
+      <div class="plist__intro js-plist-intro" hidden></div>
+      <div class="plist__bar">
+        <p class="plist__count" aria-live="polite"><strong class="js-plist-count">{products.length}</strong>商品</p>
+        <button type="button" class="plist__filterBtn js-plist-filter"><Icon name="menu" size={18} />絞り込み</button>
+        <label class="plist__sort">
+          <span>並び替え</span>
+          <select class="js-plist-sort" aria-label="並び替え">
+            <option value="reco">おすすめ順</option>
+            <option value="rank">売れ筋順</option>
+            <option value="price-asc">価格の安い順</option>
+            <option value="price-desc">価格の高い順</option>
+          </select>
+        </label>
+      </div>
+      <div class="plist__chips js-plist-chips" hidden></div>
+
+      <div class="p-grid p-grid--3 js-plist-grid">
+        {sorted.map((p) => <ProductCard product={p} showCart />)}
+      </div>
+
+      <div class="plist__empty js-plist-empty" hidden>
+        <p>条件に合う商品が見つかりませんでした。</p>
+        <button type="button" class="c-btn c-btn--outline js-plist-reset">条件をクリアする</button>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,68 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Icon from '../components/Icon.astro';
+import { company, stores } from '../data/site';
+---
+<BaseLayout title="お問い合わせ" description="狭山茶の平塚園へのお問い合わせ。商品・ご注文・贈り物のご相談など、お電話・FAX・フォームで承ります。">
+  <PageHeader title="お問い合わせ" en="CONTACT" lead="商品やご注文、贈り物のご相談など、お気軽にお問い合わせください。<br />お急ぎの場合はお電話でのお問い合わせが確実です。" />
+
+  <div class="l-container">
+    <section class="block" aria-label="お電話・FAX">
+      <div class="f-order__cols">
+        {stores.map((s) => (
+          <div class="f-order__col" style="background: var(--c-panel); flex: 1;">
+            <p class="f-order__store">{s.name}</p>
+            <a class="f-order__tel" href={`tel:${s.tel.replaceAll('-', '')}`}><Icon name="phone" size={22} /><span>{s.tel}</span></a>
+            <p class="f-order__fax"><Icon name="fax" size={18} />FAX {s.fax}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="form-title">
+      <h2 id="form-title" class="c-ttl-l2">お問い合わせフォーム</h2>
+      <form class="c-form js-demo-form" novalidate={false}>
+        <div class="c-form__row">
+          <label class="c-form__label" for="f-type">お問い合わせ種別<span class="c-form__req">必須</span></label>
+          <select id="f-type" name="type" required>
+            <option value="">選択してください</option>
+            <option>商品について</option>
+            <option>ご注文・お届けについて</option>
+            <option>贈り物のご相談</option>
+            <option>店舗について</option>
+            <option>そのほか</option>
+          </select>
+        </div>
+        <div class="c-form__row">
+          <label class="c-form__label" for="f-name">お名前<span class="c-form__req">必須</span></label>
+          <input id="f-name" name="name" type="text" autocomplete="name" placeholder="例）平塚 花子" required />
+        </div>
+        <div class="c-form__row">
+          <label class="c-form__label" for="f-kana">ふりがな<span class="c-form__any">任意</span></label>
+          <input id="f-kana" name="kana" type="text" placeholder="例）ひらつか はなこ" />
+        </div>
+        <div class="c-form__row">
+          <label class="c-form__label" for="f-email">メールアドレス<span class="c-form__req">必須</span></label>
+          <input id="f-email" name="email" type="email" autocomplete="email" placeholder="例）example@example.com" required />
+        </div>
+        <div class="c-form__row">
+          <label class="c-form__label" for="f-tel">電話番号<span class="c-form__any">任意</span></label>
+          <input id="f-tel" name="tel" type="tel" autocomplete="tel" placeholder="例）04-2962-2443" />
+        </div>
+        <div class="c-form__row">
+          <label class="c-form__label" for="f-body">お問い合わせ内容<span class="c-form__req">必須</span></label>
+          <textarea id="f-body" name="body" required></textarea>
+        </div>
+        <label class="c-form__check">
+          <input type="checkbox" name="agree" required />
+          <span><a href="/privacy/" target="_blank" style="text-decoration: underline;">プライバシーポリシー</a>に同意する</span>
+        </label>
+        <div class="c-form__submit">
+          <button type="submit" class="c-btn c-btn--primary c-btn--lg">入力内容を送信する</button>
+        </div>
+      </form>
+      <p style="margin-top: 3.2rem; color: var(--c-gray); font-size: 1.3rem; text-align: center;">メールでのお問い合わせ：{company.email}</p>
+    </section>
+  </div>
+</BaseLayout>

@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import Icon from '../../components/Icon.astro';
+import { learnLinks, categories } from '../../data/site';
+---
+<BaseLayout title="お茶を知る・楽しむ" description="狭山茶のおいしいいれ方、お茶の種類、狭山茶の歴史、茶園の一年。お茶をもっと楽しむための読みものです。">
+  <PageHeader
+    title="お茶を知る・楽しむ"
+    en="ENJOY TEA"
+    lead="いつもの一杯が、もっとおいしくなる。<br />いれ方のコツから狭山茶の歴史まで、お茶をもっと楽しむための読みものをお届けします。"
+    image="/images/photo/matcha-powder.jpg"
+  />
+
+  <div class="l-container">
+    <section class="block" aria-label="読みもの一覧">
+      <ul class="c-cards c-cards--2">
+        {learnLinks.map((l) => (
+          <li class="js-fade">
+            <a href={l.href} class="c-card c-card--learn">
+              <span class="c-card__img"><img src={l.image} alt="" loading="lazy" /></span>
+              <span class="c-card__en">{l.en}</span>
+              <span class="c-card__ttl" style="font-size: 2.2rem;">{l.title}</span>
+              <span class="c-card__txt">{l.text}</span>
+              <span class="c-card__more">読む<Icon name="arrow" size={14} /></span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="block quote">
+      <p>色は静岡、香りは宇治よ、<br />味は狭山でとどめさす</p>
+      <cite>── 狭山茶摘み歌より</cite>
+    </section>
+
+    <section class="block" aria-labelledby="cat-title">
+      <div class="c-head-row">
+        <h2 id="cat-title" class="c-ttl-l2">種類から商品を探す</h2>
+        <a class="c-link" href="/learn/types/">お茶の種類を詳しく<Icon name="arrow" size={14} /></a>
+      </div>
+      <ul class="mega__cats">
+        {categories.map((c) => (
+          <li><a href={`/products/?cat=${c.slug}`}><Icon name={c.icon} size={26} /><span>{c.name}</span></a></li>
+        ))}
+      </ul>
+    </section>
+  </div>
+</BaseLayout>

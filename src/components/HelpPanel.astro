@@ -1,0 +1,34 @@
+---
+import Icon from './Icon.astro';
+
+const items = [
+  { icon: 'search', label: '商品を探したい', href: '/products/' },
+  { icon: 'gift', label: '贈り物を選びたい', href: '/gift/' },
+  { icon: 'cup', label: 'おいしいいれ方', href: '/learn/brew/' },
+  { icon: 'store', label: '店舗の場所', href: '/shops/' },
+  { icon: 'truck', label: '送料・お届け', href: '/guide/#shipping' },
+  { icon: 'mail', label: 'お問い合わせ', href: '/contact/' },
+];
+---
+<div class="help js-help">
+  <button type="button" class="help__toggle js-help-toggle" aria-expanded="false" aria-controls="help-panel">
+    <Icon name="question" size={22} />
+    <span>お困りですか？</span>
+  </button>
+  <div class="help__panel" id="help-panel" hidden>
+    <div class="help__head">
+      <p class="help__title">どのような情報を<br />お探しですか？</p>
+      <button type="button" class="help__close js-help-toggle" aria-label="閉じる"><Icon name="close" size={20} /></button>
+    </div>
+    <ul class="help__list">
+      {items.map((i) => (
+        <li>
+          <a href={i.href}>
+            <Icon name={i.icon} size={26} />
+            <span>{i.label}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</div>

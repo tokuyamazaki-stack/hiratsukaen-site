@@ -1,0 +1,54 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import Icon from '../../components/Icon.astro';
+import { categories, products, brewGuides, brewKeyFor, yen } from '../../data/site';
+
+const items = categories.map((c) => {
+  const list = products.filter((p) => p.category === c.slug);
+  const key = c.slug === 'sencha' ? 'sencha' : list[0] ? brewKeyFor(list[0]) : null;
+  return { ...c, count: list.length, min: Math.min(...list.map((p) => p.price)), brew: key ? brewGuides[key] : null };
+});
+const groups = [
+  { id: 'green', title: '緑茶', en: 'GREEN TEA', lead: '茶葉を蒸して仕上げる、日本茶の基本。摘む時期や使う部位によって、さまざまな個性が生まれます。' },
+  { id: 'roasted', title: '香ばしいお茶', en: 'ROASTED TEA', lead: '強火で炒ったり、玄米を合わせたり。香ばしい香りでカフェインも控えめなお茶です。' },
+  { id: 'easy', title: '手軽に楽しむ', en: 'EASY TEA', lead: '急須がなくても大丈夫。マグカップや水筒で、いつでもどこでも狭山茶を。' },
+  { id: 'gift', title: '贈り物・お菓子', en: 'GIFT & SWEETS', lead: '大切な方への贈り物や、お茶のおともに。' },
+];
+---
+<BaseLayout title="お茶の種類" description="煎茶・くき茶・芽茶・粉茶・荒茶・ほうじ茶・番茶・玄米茶など、平塚園で取り扱うお茶の種類と特徴をご紹介します。">
+  <PageHeader
+    title="お茶の種類"
+    en="TEA TYPES"
+    crumbs={[{ label: 'お茶を知る・楽しむ', href: '/learn/' }]}
+    lead="同じ茶の木から生まれても、摘む時期や部位、仕上げ方でまったく違う味わいに。<br />平塚園で取り扱うお茶の種類と特徴をご紹介します。"
+    image="/images/photo/genmaicha.jpg"
+  />
+
+  <div class="l-container">
+    {groups.map((g) => (
+      <section class="block" aria-labelledby={`g-${g.id}`}>
+        <p class="page-head__en">{g.en}</p>
+        <h2 id={`g-${g.id}`} class="c-ttl-l2" style="margin-bottom: 1.6rem;">{g.title}</h2>
+        <p style="margin-bottom: 4rem; color: var(--c-text-2);">{g.lead}</p>
+        <div class="types">
+          {items.filter((c) => c.group === g.id).map((c) => (
+            <article class="type js-fade" id={c.slug}>
+              <div class="type__head">
+                <Icon name={c.icon} size={44} />
+                <h3 class="type__name"><small>{c.en}</small>{c.name}</h3>
+              </div>
+              <p>{c.lead}</p>
+              <div class="type__foot">
+                <span class="type__meta">
+                  {c.brew ? `${c.brew.temp}・${c.brew.time}` : `${c.count}商品`}　{yen(c.min)}〜
+                </span>
+                <a class="c-link" href={`/products/?cat=${c.slug}`} style="min-width: 0;">商品を見る（{c.count}）<Icon name="arrow" size={14} /></a>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    ))}
+  </div>
+</BaseLayout>

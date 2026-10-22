@@ -1,0 +1,141 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import ProductCard from '../components/ProductCard.astro';
+import Icon from '../components/Icon.astro';
+import { products, series, company, yen } from '../data/site';
+
+const gifts = products.filter((p) => p.category === 'gift');
+const sweets = products.filter((p) => p.category === 'sweets');
+const minPrice = Math.min(...gifts.map((g) => g.price));
+
+// 茶葉 × 詰め合わせ の価格表
+const cols = [
+  { key: '2袋', label: '2袋 箱入り', test: (n: string) => n.includes('2袋') && !n.includes('吟撰') },
+  { key: '3袋', label: '3袋 箱入り', test: (n: string) => n.includes('3袋') && !n.includes('吟撰') },
+  { key: '2缶', label: '2缶セット', test: (n: string) => n.includes('2缶') && !n.includes('吟撰') },
+  { key: '3缶', label: '3缶セット', test: (n: string) => n.includes('3缶') && !n.includes('吟撰') },
+  { key: '吟撰', label: '吟撰 2缶セット', test: (n: string) => n.includes('吟撰') },
+];
+const rows = series.map((s) => ({
+  ...s,
+  cells: cols.map((c) => gifts.find((g) => g.series === s.id && c.test(g.name.normalize('NFKC')))),
+}));
+
+const budgets = [
+  { id: 'b1', label: '〜3,500円', list: gifts.filter((g) => g.price < 3500) },
+  { id: 'b2', label: '3,500〜5,000円', list: gifts.filter((g) => g.price >= 3500 && g.price < 5000) },
+  { id: 'b3', label: '5,000〜7,000円', list: gifts.filter((g) => g.price >= 5000 && g.price < 7000) },
+  { id: 'b4', label: '7,000円〜', list: gifts.filter((g) => g.price >= 7000) },
+];
+---
+<BaseLayout title="贈り物" description="狭山茶の贈り物。袋箱入り・缶セット・吟撰缶セットなど、茶葉とご予算から選べるギフトをご用意しています。">
+  <Breadcrumb items={[{ label: '贈り物' }]} />
+
+  <section class="gift-hero">
+    <div class="gift-hero__text">
+      <p class="page-head__en">GIFT SELECTION</p>
+      <h1 class="page-head__title">贈り物</h1>
+      <p class="mv__title" style="margin-top: 3.2rem; font-size: clamp(2.6rem, 2.8vw, 3.8rem);">大切な方へ、<br />狭山の香りを。</p>
+      <p class="page-head__lead" style="margin-top: 0;">「色は静岡、香りは宇治よ、味は狭山でとどめさす」。<br />コクのある味わいの狭山茶は、季節のご挨拶やお礼の品として長く選ばれてきました。袋箱入り・缶セット・吟撰缶セットまで、全{gifts.length}種類をご用意しています。</p>
+      <p class="mv__price" style="margin-top: 2.4rem;">{yen(minPrice)}<span>（税込）〜</span></p>
+    </div>
+    <div class="gift-hero__collage" aria-hidden="true">
+      <img src="/images/products/16527081.jpg" alt="" />
+      <img src="/images/products/16527167.jpg" alt="" />
+    </div>
+  </section>
+
+  <div class="l-container" style="margin-top: 10rem;">
+    <nav class="c-anchors" aria-label="ページ内リンク">
+      <a href="#point">選び方のポイント<Icon name="arrow" size={14} /></a>
+      <a href="#matrix">茶葉と詰め合わせで選ぶ<Icon name="arrow" size={14} /></a>
+      <a href="#budget">ご予算から選ぶ<Icon name="arrow" size={14} /></a>
+      <a href="#sweets">お茶のおともに<Icon name="arrow" size={14} /></a>
+    </nav>
+
+    <section class="block" id="point" aria-labelledby="point-title">
+      <h2 id="point-title" class="c-ttl-l2">選び方のポイント</h2>
+      <ul class="points">
+        <li>
+          <h3><Icon name="leaf" size={24} />茶葉で選ぶ</h3>
+          <p>最上級の「見出野」、まろやかな「狭山かおり」、縁起のよい「八十八夜摘」、ふくよかな香りの「狭山つばき」。お使い物には狭山つばき以上が多く選ばれています。</p>
+        </li>
+        <li>
+          <h3><Icon name="gift" size={24} />詰め合わせで選ぶ</h3>
+          <p>気軽な贈り物には100g袋を詰めた「袋箱入り」。保存しやすく見栄えのよい「缶セット」は、改まったご挨拶にもおすすめです。</p>
+        </li>
+        <li>
+          <h3><Icon name="award" size={24} />特別な方へ</h3>
+          <p>選りすぐりの茶葉を詰めた「吟撰 特上煎茶」の缶セットは、目上の方への贈り物や大切な節目のお祝いに。</p>
+        </li>
+      </ul>
+    </section>
+
+    <section class="block" id="matrix" aria-labelledby="matrix-title">
+      <h2 id="matrix-title" class="c-ttl-l2">茶葉と詰め合わせで選ぶ</h2>
+      <p style="margin: -1.6rem 0 3.2rem; color: var(--c-text-2); font-size: 1.4rem;">価格はすべて税込です。金額をクリックすると商品ページへ移動します。</p>
+      <div class="c-scroll">
+        <table class="matrix">
+          <thead>
+            <tr>
+              <th scope="col">茶葉</th>
+              {cols.map((c) => <th scope="col">{c.label}</th>)}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r, i) => (
+              <tr class:list={{ 'is-top': i === 0 }}>
+                <th scope="row">{r.name}<small>{r.catch.replace('\n', '')}</small></th>
+                {r.cells.map((g) => (
+                  <td>
+                    {g ? (
+                      <a href={`/products/${g.id}/`}>{yen(g.price)}<small>商品を見る</small></a>
+                    ) : (
+                      <span style="color: var(--c-gray);">―</span>
+                    )}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="block js-tabs" id="budget" aria-labelledby="budget-title">
+      <div class="c-head-row" style="margin-bottom: 3.2rem;">
+        <h2 id="budget-title" class="c-ttl-l2" style="margin-bottom: 0;">ご予算から選ぶ</h2>
+        <div class="c-tabs-box" role="tablist" aria-label="ご予算">
+          {budgets.map((b, i) => (
+            <button type="button" role="tab" id={`tab-${b.id}`} aria-controls={b.id} aria-selected={i === 0 ? 'true' : 'false'} class:list={{ 'is-active': i === 0 }} tabindex={i === 0 ? 0 : -1}>{b.label}</button>
+          ))}
+        </div>
+      </div>
+      {budgets.map((b, i) => (
+        <div role="tabpanel" id={b.id} aria-labelledby={`tab-${b.id}`} hidden={i !== 0}>
+          <div class="p-grid p-grid--4">
+            {b.list.map((g) => <ProductCard product={g} showCart />)}
+          </div>
+        </div>
+      ))}
+    </section>
+
+    <section class="block" id="sweets" aria-labelledby="sweets-title">
+      <div class="c-head-row">
+        <h2 id="sweets-title" class="c-ttl-l2">お茶のおともに</h2>
+        <a class="c-link" href="/products/?cat=sweets">お菓子をすべて見る<Icon name="arrow" size={14} /></a>
+      </div>
+      <div class="p-grid p-grid--4">
+        {sweets.map((s) => <ProductCard product={s} showCart />)}
+      </div>
+    </section>
+
+    <section class="block">
+      <p class="c-notice">
+        <Icon name="truck" size={18} />
+        送料無料（{company.freeShippingThreshold.toLocaleString()}円以上）はご自宅への配送に限ります。贈り物として別のお届け先へ送る場合や、数量の多いご注文・ご相談は、お電話（{company.tel}）またはお問い合わせフォームよりお気軽にご連絡ください。
+      </p>
+    </section>
+  </div>
+</BaseLayout>

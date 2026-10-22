@@ -1,0 +1,55 @@
+---
+import Icon from './Icon.astro';
+import { products, company } from '../data/site';
+import { withBase } from '../lib/url';
+
+// カート表示に必要な最小限の商品情報だけをクライアントへ渡す
+const catalog = Object.fromEntries(
+  products.map((p) => [p.id, { name: p.name, spec: p.spec, price: p.price, image: withBase(p.image) }]),
+);
+---
+<script type="application/json" id="catalog-data" set:html={JSON.stringify(catalog)} />
+
+<div class="cart" id="cart" hidden data-free={company.freeShippingThreshold}>
+  <div class="cart__overlay js-cart-close"></div>
+  <aside class="cart__panel" role="dialog" aria-modal="true" aria-labelledby="cart-title">
+    <div class="cart__head">
+      <p id="cart-title" class="cart__title"><Icon name="cart" size={22} />カート</p>
+      <button type="button" class="cart__close js-cart-close" aria-label="カートを閉じる"><Icon name="close" size={22} /></button>
+    </div>
+
+    <div class="cart__ship js-cart-ship">
+      <p class="cart__shipText js-cart-ship-text"></p>
+      <div class="cart__shipBar"><span class="js-cart-ship-bar"></span></div>
+    </div>
+
+    <ul class="cart__list js-cart-list"></ul>
+
+    <div class="cart__empty js-cart-empty">
+      <Icon name="cup" size={40} />
+      <p>カートに商品はありません</p>
+      <a class="c-btn c-btn--outline" href="/products/">商品を探す</a>
+    </div>
+
+    <div class="cart__foot js-cart-foot">
+      <dl class="cart__sum">
+        <dt>小計（税込）</dt>
+        <dd class="js-cart-subtotal">¥0</dd>
+      </dl>
+      <p class="cart__note">送料・手数料はご購入手続きの画面で計算されます。</p>
+      <button type="button" class="c-btn c-btn--primary c-btn--block js-checkout">ご購入手続きへ</button>
+      <a class="c-btn c-btn--ghost c-btn--block" href="/products/">買い物を続ける</a>
+    </div>
+  </aside>
+</div>
+
+<div class="modal" id="modal" hidden>
+  <div class="modal__overlay js-modal-close"></div>
+  <div class="modal__box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <p id="modal-title" class="modal__title js-modal-title"></p>
+    <div class="modal__body js-modal-body"></div>
+    <button type="button" class="c-btn c-btn--primary js-modal-close">閉じる</button>
+  </div>
+</div>
+
+<div class="toast js-toast" role="status" aria-live="polite"></div>

@@ -1,0 +1,28 @@
+---
+import Breadcrumb, { type Crumb } from './Breadcrumb.astro';
+
+interface Props {
+  title: string;
+  en?: string;
+  lead?: string;
+  image?: string;
+  crumbs?: Crumb[];
+}
+const { title, en, lead, image, crumbs = [] } = Astro.props;
+---
+<Breadcrumb items={[...crumbs, { label: title }]} />
+
+<header class:list={['page-head', { 'page-head--image': image }]}>
+  <div class="l-container page-head__inner">
+    <div class="page-head__text">
+      {en && <p class="page-head__en">{en}</p>}
+      <h1 class="page-head__title">{title}</h1>
+      {lead && <p class="page-head__lead" set:html={lead} />}
+    </div>
+    {image && (
+      <div class="page-head__img">
+        <img src={image} alt="" />
+      </div>
+    )}
+  </div>
+</header>

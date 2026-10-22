@@ -1,0 +1,52 @@
+---
+import Icon from './Icon.astro';
+import { categoryBySlug, yen, type Product } from '../data/site';
+
+interface Props {
+  product: Product;
+  rank?: number;
+  showCart?: boolean;
+  headingTag?: 'h2' | 'h3' | 'h4' | 'p';
+}
+const { product: p, rank, showCart = false, headingTag: H = 'h3' } = Astro.props;
+const cat = categoryBySlug[p.category];
+const labels: { text: string; tone: string }[] = [];
+if (p.recommend) labels.push({ text: 'おすすめ', tone: 'green' });
+if (p.bestseller) labels.push({ text: `売れ筋 No.${p.bestseller}`, tone: 'orange' });
+if (p.grade) labels.push({ text: p.grade, tone: 'gold' });
+if (p.spec?.includes('缶')) labels.push({ text: '缶入り', tone: 'gray' });
+---
+<article
+  class="p-card"
+  data-product
+  data-id={p.id}
+  data-cat={p.category}
+  data-group={cat?.group}
+  data-price={p.price}
+  data-rank={p.bestseller ?? 99}
+  data-reco={p.recommend ? 1 : 0}
+  data-search={`${p.name} ${p.spec ?? ''} ${cat?.name ?? ''} ${p.desc}`}
+>
+  <a class="p-card__link" href={`/products/${p.id}/`}>
+    <div class="p-card__img">
+      {rank && <span class="p-card__rank" aria-label={`第${rank}位`}>{rank}</span>}
+      <img src={p.image} alt="" loading="lazy" decoding="async" />
+    </div>
+    <div class="p-card__body">
+      <p class="p-card__cat">{cat?.name}</p>
+      <H class="p-card__name">{p.name}</H>
+      {p.spec && <p class="p-card__spec">{p.spec}</p>}
+      <p class="p-card__price">{yen(p.price)}<span>（税込）</span></p>
+      {labels.length > 0 && (
+        <ul class="p-card__labels">
+          {labels.map((l) => <li class={`c-label c-label--${l.tone}`}>{l.text}</li>)}
+        </ul>
+      )}
+    </div>
+  </a>
+  {showCart && (
+    <button type="button" class="p-card__cart js-add-cart" data-id={p.id} aria-label={`${p.name}をカートに入れる`}>
+      <Icon name="cart" size={18} />カートに入れる
+    </button>
+  )}
+</article>

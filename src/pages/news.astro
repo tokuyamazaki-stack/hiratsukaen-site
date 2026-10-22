@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Icon from '../components/Icon.astro';
+import { news } from '../data/site';
+---
+<BaseLayout title="お知らせ" bodyClass="news-page">
+  <PageHeader title="お知らせ" en="NEWS" />
+
+  <div class="l-container">
+    <section class="block js-tabs" aria-label="お知らせ一覧">
+      <div class="c-tabs-box" role="tablist" aria-label="お知らせの種類" style="margin-bottom: 3.2rem;">
+        <button type="button" role="tab" class="is-active" aria-selected="true" aria-controls="n-all" id="tab-n-all">すべて</button>
+        <button type="button" role="tab" aria-selected="false" aria-controls="n-item" id="tab-n-item" tabindex="-1">商品</button>
+        <button type="button" role="tab" aria-selected="false" aria-controls="n-store" id="tab-n-store" tabindex="-1">お店</button>
+        <button type="button" role="tab" aria-selected="false" aria-controls="n-info" id="tab-n-info" tabindex="-1">お知らせ</button>
+      </div>
+      {[
+        { id: 'n-all', list: news },
+        { id: 'n-item', list: news.filter((n) => n.type === 'item') },
+        { id: 'n-store', list: news.filter((n) => n.type === 'store') },
+        { id: 'n-info', list: news.filter((n) => n.type === 'info') },
+      ].map((t, i) => (
+        <ul class="c-news" role="tabpanel" id={t.id} aria-labelledby={`tab-${t.id}`} hidden={i !== 0} style="border-top: 1px solid var(--c-line);">
+          {t.list.map((n) => (
+            <li>
+              <a href={n.href}>
+                <span class="c-news__meta"><time datetime={n.date.replaceAll('.', '-')}>{n.date}</time><span class="c-news__tag">{n.tag}</span></span>
+                <span class="c-news__title">{n.title}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      ))}
+    </section>
+
+    <section class="block" id="notice" aria-labelledby="notice-title">
+      <h2 id="notice-title" class="c-ttl-l2">当園の狭山茶の販売について</h2>
+      <div class="prose">
+        <p>当園の狭山茶は、当サイトおよび直営店（入間本店・日高サイボク店）以外での販売はしておりません。当サイト以外でのご購入にはご注意ください。</p>
+        <p>ご不明な点がございましたら、お電話またはお問い合わせフォームよりご連絡ください。</p>
+      </div>
+      <p style="margin-top: 3.2rem;"><a class="c-link" href="/contact/">お問い合わせ<Icon name="arrow" size={14} /></a></p>
+    </section>
+  </div>
+</BaseLayout>

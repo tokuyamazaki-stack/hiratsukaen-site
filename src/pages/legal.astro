@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { company } from '../data/site';
+
+const rows: [string, string][] = [
+  ['販売業者', company.name],
+  ['運営統括責任者', '平塚 尚吾'],
+  ['所在地', `〒${company.zip} ${company.address}`],
+  ['電話番号', company.tel],
+  ['公開メールアドレス', company.email],
+  ['ホームページ', 'https://www.hiratsukaen.co.jp/'],
+  ['屋号・サービス名', '農林水産大臣賞受賞 狭山茶の平塚園'],
+  ['商品代金以外の料金', '送料、消費税、手数料、包装料'],
+  ['申込有効期限', 'お申し込みより10日間'],
+  ['不良品', '不良品、異物の混入、商品違いに関しては、ご返送いただき商品を交換させていただきます（送料は当園で負担いたします）。良品の返品は原則不可とさせていただきます。'],
+  ['販売数量', '特に定めておりませんが、大量のお取引に関してはお断りさせていただく場合がございます。'],
+  ['引渡し時期', '代金引換の場合は注文日より3日以内に発送いたします。銀行振込の場合は入金日より3日以内に発送いたします。クレジットの場合は注文確定後3日以内に発送いたします。'],
+  ['お支払い方法', 'クレジットカード、Amazon Pay、代金引換、銀行振込'],
+  ['お支払い期限', '代金引換の場合は、商品引渡し時に配達員にお支払いください。銀行振込の場合は、お申し込み日より10日以内にお振込みをお願いいたします。'],
+  ['返品期限', '商品到着後10日以内'],
+  ['返品送料', '商品の不備による返品については当園で負担させていただきます。'],
+];
+---
+<BaseLayout title="特定商取引法に基づく表記">
+  <PageHeader title="特定商取引法に基づく表記" en="LEGAL NOTICE" />
+  <div class="l-container">
+    <table class="c-table">
+      <tbody>
+        {rows.map(([k, v]) => <tr><th scope="row">{k}</th><td>{v}</td></tr>)}
+      </tbody>
+    </table>
+  </div>
+</BaseLayout>

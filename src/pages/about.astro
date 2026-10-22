@@ -1,0 +1,110 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import Icon from '../components/Icon.astro';
+import { company } from '../data/site';
+---
+<BaseLayout title="平塚園について" description="農林水産大臣賞を四度受賞。埼玉県入間市で昭和24年からお茶づくりを続ける平塚園の、狭山茶へのこだわりをご紹介します。" ogImage="/images/photo/field-iruma-1.jpg">
+  <Breadcrumb items={[{ label: '平塚園について' }]} />
+
+  <section class="about-hero">
+    <img src="/images/photo/field-tokorozawa.jpg" alt="狭山丘陵に広がる茶畑" />
+    <div class="l-container about-hero__inner">
+      <h1 class="about-hero__copy">魂の宿る<br />お茶づくり<small>平塚園について</small></h1>
+    </div>
+  </section>
+
+  <div class="l-container" style="margin-top: 12rem;">
+    <section class="block story" aria-labelledby="story1">
+      <div class="story__img"><img src="/images/photo/field-iruma-1.jpg" alt="入間市の狭山茶の茶畑" loading="lazy" /></div>
+      <div>
+        <p class="story__en">SINCE 1949</p>
+        <h2 id="story1" class="story__title">丹精込めて育てた茶葉を、<br />狭山の伝統の技で。</h2>
+        <div class="prose">
+          <p>当園では古来よりの狭山茶の伝統をいかして生産・加工を行い、埼玉県認証の特別栽培やエコファーマーにも登録して、環境にやさしく、安心でおいしいお茶づくりに努めております。</p>
+          <p>茶園の管理はもちろん、品評会で毎年入賞を果たすために製造技術の向上に努め、そこで培われた経験で、ほかに真似のできない製品に仕上がるよう心がけております。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="block award" aria-labelledby="award-title">
+      <img class="award__img" src="/images/site/jushou.jpg" alt="店頭に飾られた農林水産大臣賞のトロフィーと賞状" loading="lazy" />
+      <div>
+        <p class="award__num">農林水産大臣賞<strong>4</strong>度受賞</p>
+        <h2 id="award-title" class="award__title">ひたむきなお茶づくりが評価されました</h2>
+        <div class="prose">
+          <p>これまでに四度、農林水産大臣賞をいただきました。品評会での評価に甘んじることなく、毎年の入賞を目標に、茶園づくりから製造技術まで磨き続けています。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="season" aria-labelledby="season-title">
+      <h2 id="season-title" class="c-ttl-l2">季節に合わせた仕上げ</h2>
+      <div class="prose" style="margin-bottom: 4rem;">
+        <p>春に製造した荒茶を、そのまま一年同じように仕上げるのではなく、季節に合わせて仕上げ方を変えています。その季節においしいお茶をお届けするための、平塚園の工夫です。</p>
+      </div>
+      <div class="season">
+        <div class="season__summer">
+          <h3><Icon name="sun" size={28} />暑い季節は、さっぱりと</h3>
+          <p>すっきりと飲みやすい味わいに仕上げてお届けします。</p>
+        </div>
+        <div class="season__winter">
+          <h3><Icon name="snow" size={28} />寒い季節は、コクのある仕上げ</h3>
+          <p>旨みをしっかりと感じられる味わいに仕上げてお届けします。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="block story story--rev" aria-labelledby="story2">
+      <div class="story__img"><img src="/images/photo/leaves-sayama.jpg" alt="狭山茶の新芽" loading="lazy" /></div>
+      <div>
+        <p class="story__en">SAYAMA TEA</p>
+        <h2 id="story2" class="story__title">味は狭山で、とどめさす。</h2>
+        <div class="prose">
+          <p>狭山茶は全国的に見ても生産量は決して多くありませんが、「色は静岡、香りは宇治よ、味は狭山でとどめさす」と狭山茶摘み歌に歌われるほど、そのおいしさはどこの茶所にも負けない自慢のひとつです。</p>
+          <p>比較的冷涼な丘陵地帯で育ち、摘採は年2回ほど。古くから「狭山火入」と称されてきた火入れ法によって、コクのある味と深い香気が生まれます。</p>
+        </div>
+        <p style="margin-top: 3.2rem;"><a class="c-link" href="/learn/sayamacha/">狭山茶について詳しく<Icon name="arrow" size={14} /></a></p>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="history-title">
+      <h2 id="history-title" class="c-ttl-l2">あゆみ</h2>
+      <ol class="history">
+        <li>
+          <p class="history__year">鎌倉時代<small>狭山茶のはじまり</small></p>
+          <div class="history__text"><h3>狭山の地で茶の栽培がはじまる</h3><p>京都の高僧・明恵上人によって栽培されたのが始まりといわれています。</p></div>
+        </li>
+        <li>
+          <p class="history__year">江戸時代<small>茶業の確立</small></p>
+          <div class="history__text"><h3>狭山茶が茶業として確立</h3><p>この頃に狭山の茶業が確立し、今日の狭山茶へとつながっていきます。</p></div>
+        </li>
+        <li>
+          <p class="history__year">1949<small>昭和24年</small></p>
+          <div class="history__text"><h3>平塚園 創業</h3><p>埼玉県入間市にて、狭山茶の製造・販売をはじめる。</p></div>
+        </li>
+        <li>
+          <p class="history__year">1972<small>昭和47年4月</small></p>
+          <div class="history__text"><h3>有限会社 平塚園 設立</h3><p>法人化し、現在の体制となる。</p></div>
+        </li>
+        <li>
+          <p class="history__year">現在<small>TODAY</small></p>
+          <div class="history__text"><h3>入間本店・日高サイボク店、オンラインショップで販売</h3><p>農林水産大臣賞を四度受賞。特別栽培・エコファーマーとして、環境にやさしいお茶づくりを続けています。</p></div>
+        </li>
+      </ol>
+    </section>
+
+    <section class="block quote">
+      <p>自然の恵みを存分に受け、<br />丹精込めて造りました狭山茶を、<br />ご愛顧のほど、よろしくお願い申し上げます。</p>
+      <cite>{company.name} 代表取締役 {company.ceo}</cite>
+    </section>
+
+    <section class="block">
+      <ul class="c-linkbtns c-linkbtns--3">
+        <li><a class="c-linkbtn" href="/products/"><span><Icon name="leaf" size={24} />商品を探す</span><Icon name="arrow" size={22} /></a></li>
+        <li><a class="c-linkbtn" href="/shops/"><span><Icon name="store" size={24} />店舗案内</span><Icon name="arrow" size={22} /></a></li>
+        <li><a class="c-linkbtn" href="/company/"><span><Icon name="book" size={24} />会社概要</span><Icon name="arrow" size={22} /></a></li>
+      </ul>
+    </section>
+  </div>
+</BaseLayout>

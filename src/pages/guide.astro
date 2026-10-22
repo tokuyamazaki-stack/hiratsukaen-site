@@ -1,0 +1,169 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Icon from '../components/Icon.astro';
+import { company, stores } from '../data/site';
+
+const shipping = [
+  ['北海道', 800], ['北東北', 600], ['南東北', 500], ['関東', 500], ['信越', 500], ['北陸', 500],
+  ['中部', 500], ['関西', 600], ['中国', 700], ['四国', 700], ['九州', 800], ['沖縄', 850],
+] as const;
+const codFees = [
+  ['9,999円まで', '324円'],
+  ['29,999円まで', '432円'],
+  ['99,999円まで', '648円'],
+  ['299,999円まで', '1,080円'],
+];
+const intl = [
+  ['1kg未満', '4,000円'], ['1.5kg未満', '5,000円'], ['2kg未満', '6,000円'], ['2.5kg未満', '7,000円'],
+  ['3kg未満', '8,000円'], ['3.5kg未満', '9,000円'], ['4kg未満', '10,000円'], ['4.5kg未満', '11,000円'],
+  ['5kg未満', '12,000円'], ['5.5kg未満', '13,000円'], ['6kg未満', '14,000円'],
+];
+const faq = [
+  { q: '送料無料になる条件を教えてください。', a: `お買い上げ商品の合計が${company.freeShippingThreshold.toLocaleString()}円（税込）以上で、ご自宅への発送の場合に送料無料となります。` },
+  { q: '注文してからどのくらいで届きますか？', a: 'ご注文確認後、原則3営業日以内に発送いたします。銀行振込の場合はご入金確認後3営業日以内の発送です。年末年始・GW・お盆・連休中は、お届けまでに日数がかかる場合がございます。' },
+  { q: '注文後に確認の連絡が来ません。', a: 'ご注文から3営業日を経過しても当園から確認のご連絡がない場合は、ご連絡先の記載違いなどの可能性がございます。お手数ですが、再度ご注文いただくか、お電話にてお問い合わせください。' },
+  { q: '電話やFAXでも注文できますか？', a: `はい、承ります。入間本店（TEL ${stores[0].tel}／FAX ${stores[0].fax}）までご連絡ください。` },
+  { q: '海外へ送ることはできますか？', a: '国際郵便でお届けいたします。発送から到着まで2週間程度かかります。送料は重量により異なります（下記「国際郵便」の表をご確認ください）。' },
+  { q: '届いた商品に不良がありました。', a: '不良品、異物の混入、商品違いの場合は、ご返送いただいたうえで商品を交換いたします（送料は当園で負担いたします）。商品到着後10日以内にご連絡ください。' },
+  { q: '当サイト以外の通販サイトでも買えますか？', a: '当園の狭山茶は、当サイトおよび直営店（入間本店・日高サイボク店）以外での販売はしておりません。他のサイトでのご購入にはご注意ください。' },
+];
+---
+<BaseLayout title="ご利用ガイド" description="狭山茶の平塚園 オンラインショップのご利用ガイド。ご購入の流れ、お支払い方法、送料・お届け、返品・交換、よくあるご質問。">
+  <PageHeader title="ご利用ガイド" en="SHOPPING GUIDE" lead="はじめての方にも安心してお買い物いただけるよう、ご注文からお届けまでをご案内します。" />
+
+  <div class="l-container">
+    <nav class="c-anchors" aria-label="ページ内リンク">
+      <a href="#flow">ご購入の流れ<Icon name="arrow" size={14} /></a>
+      <a href="#payment">お支払い方法<Icon name="arrow" size={14} /></a>
+      <a href="#shipping">送料・お届け<Icon name="arrow" size={14} /></a>
+      <a href="#tel">お電話・FAXでのご注文<Icon name="arrow" size={14} /></a>
+      <a href="#return">返品・交換<Icon name="arrow" size={14} /></a>
+      <a href="#faq">よくあるご質問<Icon name="arrow" size={14} /></a>
+    </nav>
+
+    <section class="block" id="flow" aria-labelledby="flow-title">
+      <h2 id="flow-title" class="c-ttl-l2">ご購入の流れ</h2>
+      <ol class="c-steps">
+        <li><h3>商品を選ぶ</h3><p>「商品を探す」から種類やご予算で商品をお選びください。商品名や画像をクリックすると詳細が表示されます。</p></li>
+        <li><h3>カートに入れる</h3><p>数量を選んで「カートに入れる」を押してください。お買い物を続ける場合は、そのまま商品をお選びいただけます。</p></li>
+        <li><h3>ご購入手続きへ</h3><p>カートの中身と数量・金額をご確認のうえ、「ご購入手続きへ」をクリックしてください。</p></li>
+        <li><h3>お客様情報の入力</h3><p>お名前・ご住所・お届け先などをご入力ください。会員の方はメールアドレスとパスワードでログインできます。</p></li>
+        <li><h3>ご注文内容の確認</h3><p>ご注文内容とお客様情報をご確認ください。ご購入前の確認はこの画面が最後になります。</p></li>
+        <li><h3>ご注文完了</h3><p>自動返信メールをお送りします。その後、当園から合計金額・お届け日などをご連絡いたします。</p></li>
+      </ol>
+    </section>
+
+    <section class="block" id="payment" aria-labelledby="payment-title">
+      <h2 id="payment-title" class="c-ttl-l2">お支払い方法</h2>
+      <div class="pd__info pd__info--2">
+        <div>
+          <h3><Icon name="card" size={22} />クレジットカード</h3>
+          <p>各種クレジットカードがご利用いただけます。ご注文確定後、3日以内に発送いたします。</p>
+        </div>
+        <div>
+          <h3><Icon name="card" size={22} />Amazon Pay</h3>
+          <p>Amazonのアカウントに登録された配送先やお支払い方法を利用して決済できます。</p>
+        </div>
+        <div>
+          <h3><Icon name="truck" size={22} />代金引換</h3>
+          <p>宅急便コレクトでのお届けとなります。商品お受け取り時に配達員へお支払いください。代引き手数料（税込）は以下のとおりです。</p>
+          <table class="c-table c-table--compact c-table--keep" style="margin-top: 1.6rem; background: #fff;">
+            <tbody>
+              {codFees.map(([a, b]) => <tr><th scope="row">{a}</th><td>{b}</td></tr>)}
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <h3><Icon name="home" size={22} />銀行振込</h3>
+          <p>PayPay銀行へのお振込みとなります。振込先口座はご注文確認のご連絡にてお知らせいたします。お申し込み日から10日以内にお振込みください。ご入金確認後、3日以内に発送いたします。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="shipping" aria-labelledby="shipping-title">
+      <h2 id="shipping-title" class="c-ttl-l2">送料・お届け</h2>
+      <div class="ship-free">
+        <Icon name="truck" size={56} />
+        <div>
+          <p class="ship-free__title">{company.freeShippingThreshold.toLocaleString()}円以上のお買い上げで送料無料</p>
+          <p class="ship-free__text">ご自宅への発送に限り、お買い上げの商品総額が{company.freeShippingThreshold.toLocaleString()}円（税込）以上の場合は送料無料とさせていただきます。</p>
+        </div>
+      </div>
+
+      <h3 class="c-ttl-l3" style="margin-top: 5.6rem;">ヤマト運輸 地域別送料（税込）</h3>
+      <div class="c-scroll">
+        <table class="c-table c-table--center c-table--keep" style="min-width: 64rem;">
+          <thead>
+            <tr>{shipping.slice(0, 6).map(([r]) => <th scope="col">{r}</th>)}</tr>
+          </thead>
+          <tbody>
+            <tr>{shipping.slice(0, 6).map(([, f]) => <td>{f.toLocaleString()}円</td>)}</tr>
+          </tbody>
+          <thead>
+            <tr>{shipping.slice(6).map(([r]) => <th scope="col">{r}</th>)}</tr>
+          </thead>
+          <tbody>
+            <tr>{shipping.slice(6).map(([, f]) => <td>{f.toLocaleString()}円</td>)}</tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="c-ttl-l3" style="margin-top: 5.6rem;">お届けまでの目安</h3>
+      <div class="prose">
+        <p>ご注文確認のご連絡後、原則として3営業日以内に商品を発送いたします。お振込みの場合は、ご入金確認後3営業日以内の発送となります。年末年始・GW・お盆・連休中などは、お届けまでに日数がかかりますのであらかじめご了承ください。</p>
+      </div>
+
+      <h3 class="c-ttl-l3" style="margin-top: 5.6rem;" id="international">国際郵便（海外への発送）</h3>
+      <p style="margin-bottom: 2rem; color: var(--c-text-2); font-size: 1.45rem;">商品到着まで、発送から2週間程度かかります。※海外発送でない場合に国際郵便を選択されると、一律の送料をご請求のうえクロネコヤマトでの発送となりますのでご注意ください。</p>
+      <div class="c-scroll">
+        <table class="c-table c-table--center c-table--keep" style="min-width: 64rem;">
+          <thead><tr><th scope="col">重量</th>{intl.slice(0, 6).map(([w]) => <th scope="col">{w}</th>)}</tr></thead>
+          <tbody><tr><th scope="row">送料</th>{intl.slice(0, 6).map(([, f]) => <td>{f}</td>)}</tr></tbody>
+          <thead><tr><th scope="col">重量</th>{intl.slice(6).map(([w]) => <th scope="col">{w}</th>)}<th></th></tr></thead>
+          <tbody><tr><th scope="row">送料</th>{intl.slice(6).map(([, f]) => <td>{f}</td>)}<td></td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="block" id="tel" aria-labelledby="tel-title">
+      <h2 id="tel-title" class="c-ttl-l2">お電話・FAXでのご注文</h2>
+      <p class="prose" style="margin-bottom: 3.2rem;"><span style="font-size: 1.6rem; line-height: 2;">インターネットでのご注文が不安な方や、贈り物の数が多い場合などは、お電話・FAXでもご注文を承ります。</span></p>
+      <div class="f-order__cols">
+        {stores.map((s) => (
+          <div class="f-order__col" style="background: var(--c-panel);">
+            <p class="f-order__store">{s.name}</p>
+            <a class="f-order__tel" href={`tel:${s.tel.replaceAll('-', '')}`}><Icon name="phone" size={22} /><span>{s.tel}</span></a>
+            <p class="f-order__fax"><Icon name="fax" size={18} />FAX {s.fax}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="block" id="return" aria-labelledby="return-title">
+      <h2 id="return-title" class="c-ttl-l2">返品・交換について</h2>
+      <table class="c-table">
+        <tbody>
+          <tr><th scope="row">不良品・商品違い</th><td>不良品、異物の混入、商品違いに関しては、ご返送いただき商品を交換させていただきます。送料は当園で負担いたします。</td></tr>
+          <tr><th scope="row">お客様都合の返品</th><td>良品の返品は原則としてお受けしておりません。あらかじめご了承ください。</td></tr>
+          <tr><th scope="row">返品期限</th><td>商品到着後10日以内にご連絡ください。</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="block" id="faq" aria-labelledby="faq-title">
+      <h2 id="faq-title" class="c-ttl-l2">よくあるご質問</h2>
+      <div class="c-faq">
+        {faq.map((f) => (
+          <details>
+            <summary>{f.q}</summary>
+            <p class="c-faq__a">{f.a}</p>
+          </details>
+        ))}
+      </div>
+      <p style="margin-top: 4rem; text-align: center;">
+        <a class="c-btn c-btn--outline" href="/contact/"><Icon name="mail" size={20} />そのほかのお問い合わせ</a>
+      </p>
+    </section>
+  </div>
+</BaseLayout>

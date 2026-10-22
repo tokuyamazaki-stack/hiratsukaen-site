@@ -1,0 +1,96 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { categories, company, stores } from '../data/site';
+---
+<section class="f-order" aria-labelledby="f-order-title">
+  <div class="l-container f-order__inner">
+    <div class="f-order__head">
+      <p class="f-order__en">ORDER BY PHONE / FAX</p>
+      <h2 id="f-order-title" class="f-order__title">お電話・FAXでもご注文を承ります</h2>
+      <p class="f-order__lead">インターネットでのご注文が不安な方も、お気軽にお電話ください。贈り物のご相談も承ります。</p>
+    </div>
+    <div class="f-order__cols">
+      {stores.map((s) => (
+        <div class="f-order__col">
+          <p class="f-order__store">{s.name}</p>
+          <a class="f-order__tel" href={`tel:${s.tel.replaceAll('-', '')}`}><Icon name="phone" size={22} /><span>{s.tel}</span></a>
+          <p class="f-order__fax"><Icon name="fax" size={18} />FAX {s.fax}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="l-container footer__inner">
+    <div class="footer__brand">
+      <a href="/" class="footer__logo" aria-label="狭山茶の平塚園 トップページ"><Logo /></a>
+      <p class="footer__desc">{company.tagline}<br />埼玉県入間市で、昭和24年からお茶づくりを続けています。</p>
+      <form class="footer__search" action="/products/" method="get" role="search">
+        <input name="q" type="search" placeholder="キーワードを入力" aria-label="キーワードで商品を探す" />
+        <button type="submit" aria-label="検索する"><Icon name="search" size={20} /></button>
+      </form>
+      <address class="footer__addr">
+        {company.name}<br />
+        〒{company.zip} {company.address}
+      </address>
+    </div>
+
+    <nav class="footer__nav" aria-label="フッターメニュー">
+      <div class="footer__col">
+        <p class="footer__colTitle"><a href="/products/">商品を探す</a></p>
+        <ul>
+          {categories.slice(0, 10).map((c) => <li><a href={`/products/?cat=${c.slug}`}>{c.name}</a></li>)}
+        </ul>
+      </div>
+      <div class="footer__col">
+        <p class="footer__colTitle"><a href="/gift/">贈り物</a></p>
+        <ul>
+          <li><a href="/gift/">贈り物特集</a></li>
+          <li><a href="/products/?cat=gift">贈り物用 一覧</a></li>
+          <li><a href="/products/?cat=sweets">お菓子</a></li>
+        </ul>
+        <p class="footer__colTitle"><a href="/learn/">お茶を知る・楽しむ</a></p>
+        <ul>
+          <li><a href="/learn/brew/">おいしいいれ方</a></li>
+          <li><a href="/learn/types/">お茶の種類</a></li>
+          <li><a href="/learn/sayamacha/">狭山茶とは</a></li>
+          <li><a href="/learn/sayamacha/#calendar">茶園の一年</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <p class="footer__colTitle"><a href="/about/">平塚園について</a></p>
+        <ul>
+          <li><a href="/about/">平塚園のお茶づくり</a></li>
+          <li><a href="/shops/">店舗案内</a></li>
+          <li><a href="/company/">会社概要</a></li>
+          <li><a href="/news/">お知らせ</a></li>
+        </ul>
+        <p class="footer__colTitle"><a href="/guide/">ご利用ガイド</a></p>
+        <ul>
+          <li><a href="/guide/#flow">ご購入の流れ</a></li>
+          <li><a href="/guide/#payment">お支払い方法</a></li>
+          <li><a href="/guide/#shipping">送料・お届け</a></li>
+          <li><a href="/guide/#faq">よくあるご質問</a></li>
+          <li><a href="/contact/">お問い合わせ</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <div class="footer__bottom">
+    <div class="l-container footer__bottomInner">
+      <ul class="footer__policy">
+        <li><a href="/legal/">特定商取引法に基づく表記</a></li>
+        <li><a href="/privacy/">プライバシーポリシー</a></li>
+        <li><a href="/credits/">写真クレジット</a></li>
+      </ul>
+      <p class="footer__copy"><small>&copy; 2004 Hiratsukaen Co., Ltd.</small></p>
+    </div>
+  </div>
+</footer>
+
+<a href="#top" class="pagetop js-pagetop" aria-label="ページの先頭へ戻る">
+  <Icon name="arrow" size={18} />
+</a>
